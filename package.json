@@ -1,0 +1,36 @@
+{
+  "name": "d3-timeline",
+  "version": "0.0.2",
+  "description": "A d3 v4 version of timeline.  Original inspiration from: https://github.com/jiahuang/d3-timeline",
+  "keywords": [
+    "d3",
+    "d3-module",
+	"d3-timeline"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "build/d3-timeline.js",
+  "jsnext:main": "index",
+  "homepage": "https://github.com/denisemauldin/d3-timeline",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denisemauldin/d3-timeline.git"
+  },
+  "scripts": {
+    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/d3-timeline.js -- index.js",
+    "test": "tape 'test/**/*-test.js'",
+    "prepublish": "npm run test && uglifyjs build/d3-timeline.js -c -m -o build/d3-timeline.min.js",
+    "postpublish": "zip -j build/d3-timeline.zip -- LICENSE README.md build/d3-timeline.js build/d3-timeline.min.js"
+  },
+  "dependencies": {
+      "d3-axis": "1.0.7",
+	  "d3-scale": "1.0.6",
+	  "d3-selection": "1.1.0",
+	  "d3-time": "1.0.6",
+	  "d3-time-format": "2.0.5"
+  },
+  "devDependencies": {
+    "rollup": "0.27",
+    "tape": "4",
+    "uglify-js": "2"
+  }
+}

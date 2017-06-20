@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="../src/d3-timeline.js"></script>
+
+  <style type="text/css">
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+      font-family: sans-serif;
+      font-size: 10px;
+    }
+
+    .timeline-label {
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+
+    #timeline2 .axis {
+      transform: translate(0px,40px);
+      -ms-transform: translate(0px,40px); /* IE 9 */
+      -webkit-transform: translate(0px,40px); /* Safari and Chrome */
+      -o-transform: translate(0px,40px); /* Opera */
+      -moz-transform: translate(0px,40px); /* Firefox */
+    }
+
+    .coloredDiv {
+      height:20px; width:20px; float:left;
+    }
+  </style>
+  <script type="text/javascript">
+    window.onload = function() {
+
+      var testData = [
+        {name: "step1", times: [{"starting_time": 0, "ending_time": 135}]},
+        {name: "step2", times: [{"starting_time": 120, "ending_time": 160}, ]},
+        {name: "step3", times: [{"starting_time": 160, "ending_time": 175}]}
+      ];
+
+      var width = 500;
+
+      function timelineHover() {
+        var chart = d3.timeline()
+          .relativeTime()
+          .tickFormat({
+            format: function(d) { return d3.time.format("%M")(d) },
+            tickTime: d3.time.minutes,
+            tickInterval: 15,
+            tickSize: 15,
+          })
+          .margin({left:70, right:30, top:0, bottom:0})
+          .hover(function (d, i, datum) {
+          // d is the current rendering object
+          // i is the index during d3 rendering
+          // datum is the id object
+            var div = $('#hoverRes');
+            var colors = chart.colors();
+            div.find('.coloredDiv').css('background-color', colors(i))
+            div.find('#name').text(datum.name);
+          })
+          .click(function (d, i, datum, point) {
+            console.log("timelineHover", datum.name);
+            console.log("point", point)
+            $("#assays").append("<div>\
+            <label>Assay Type:</label><select><option value=\"dnase\">DNAseSeq</option><option value=\"rnase\">RNASeq</option></select> \
+            <label>Assay Timepoint:</label><span>"+ d3.round(point[0]) + "</span> \
+            </div>");
+          });
+
+        var svg = d3.select("#timeline").append("svg").attr("width", width)
+          .datum(testData).call(chart);
+      }
+
+      timelineHover();
+
+    }
+  </script>
+</head>
+<body>
+
+  <div>
+    <h3>A stacked timeline with hover, click, and scroll events</h3>
+    <div id="timeline"></div>
+    <div id="hoverRes">
+      <div class="coloredDiv"></div>
+      <div id="name"></div>
+    </div>
+  </div>
+  <div>&nbsp;
+  </div>
+  <div id="assays">
+    <form>
+    </form>
+  </div>
+
+</body>
+</html>
