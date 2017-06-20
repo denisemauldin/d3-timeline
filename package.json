@@ -5,7 +5,7 @@
   "keywords": [
     "d3",
     "d3-module",
-	"d3-timeline"
+    "d3-timeline"
   ],
   "license": "BSD-3-Clause",
   "main": "build/d3-timeline.js",
@@ -16,20 +16,29 @@
     "url": "https://github.com/denisemauldin/d3-timeline.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/d3-timeline.js -- index.js",
+    "pretest": "rm -rf build && mkdir build && rollup -c -f umd -n d3 -o build/d3-timeline.js -- index.js",
     "test": "tape 'test/**/*-test.js'",
     "prepublish": "npm run test && uglifyjs build/d3-timeline.js -c -m -o build/d3-timeline.min.js",
     "postpublish": "zip -j build/d3-timeline.zip -- LICENSE README.md build/d3-timeline.js build/d3-timeline.min.js"
   },
-  "dependencies": {
-      "d3-axis": "1.0.7",
-	  "d3-scale": "1.0.6",
-	  "d3-selection": "1.1.0",
-	  "d3-time": "1.0.6",
-	  "d3-time-format": "2.0.5"
+  "peerDependencies": {
+    "d3": "4.9.1",
+    "d3-axis": "1.0.7",
+    "d3-scale": "1.0.6",
+    "d3-selection": "1.1.0",
+    "d3-time": "1.0.6",
+    "d3-time-format": "2.0.5"
   },
   "devDependencies": {
+    "@types/d3": "4.5",
+    "d3": "4.9.1",
+    "d3-axis": "1.0.7",
+    "d3-scale": "1.0.6",
+    "d3-selection": "1.1.0",
+    "d3-time": "1.0.6",
+    "d3-time-format": "2.0.5",
     "rollup": "0.27",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "tape": "4",
     "uglify-js": "2"
   }
