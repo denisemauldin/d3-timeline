@@ -1,6 +1,6 @@
-var d3 = Object.assign({}, require("d3-axis"), require("d3-scale"), require("d3-selection"), require("d3-time"), require("d3-time-format"))
-;
-var timeline = function() {
+(function() {
+    "use strict";
+    d3.timeline = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
 
 		var hover = function () {},
@@ -229,7 +229,7 @@ var timeline = function() {
 
 			var scaleFactor = (1/(ending - beginning)) * (width - margin.left - margin.right);
 
-			formatDays = function(d) {
+			function formatDays(d) {
 					var days = Math.floor(d / 86400),
 							hours = Math.floor((d - (days * 86400)) / 3600),
 							minutes = Math.floor((d - (days * 86400) - (hours * 3600)) / 60),
@@ -249,7 +249,7 @@ var timeline = function() {
 					}
 					return output;
 			};
-			formatMinutes = function(d) {
+			function formatMinutes(d) {
 					var hours = Math.floor(d / 3600),
 							minutes = Math.floor((d - (hours * 3600)) / 60),
 							seconds = d - (minutes * 60);
@@ -593,7 +593,7 @@ var timeline = function() {
 					.attr("y1", lineFormat.marginTop)
 					.attr("x2", lineScale)
 					.attr("y2", height - lineFormat.marginBottom)
-					.style("stroke", lineFormat.color)//"rgb(6,120,155)")
+					.style("stroke", lineFormat.color)//"rgb(6,120,155)"
 					.style("stroke-width", lineFormat.width);
 			}
 
@@ -828,5 +828,4 @@ var timeline = function() {
 
 		return timeline;
 	};
-
-export default timeline;
+})();
