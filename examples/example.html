@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <head>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
   <script src="../src/timeline.js"></script>
 
   <style type="text/css">
@@ -132,6 +132,7 @@
           .datum(rectAndCircleTestData).call(chart);
       }
 
+      // the stacked, hover, scrollable
       function timelineHover() {
         var chart = d3.timeline()
           .width(width*4)
@@ -189,7 +190,6 @@
       }
 
       function timelineRectColors() {
-		console.log("timeRectColors");
         var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
             .domain(['apple','orange','lemon']);
 
@@ -202,7 +202,6 @@
       }
 
       function timelineRectColorsPerTime() {
-		console.log("timelineRectColorsPerTime");
         var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
           .domain(['apple','orange','lemon']);
         var chart = d3.timeline()
@@ -213,8 +212,6 @@
       }
 
       function timelineRelativeTime() {
-		console.log("timelineRelativeTime");
-		console.log(testDataRelative);
         //This solution is for relative time is from
         //http://stackoverflow.com/questions/11286872/how-do-i-make-a-custom-axis-formatter-for-hours-minutes-in-d3-js
         var chart = d3.timeline()
@@ -228,11 +225,9 @@
 
         var svg = d3.select("#timelineRelativeTime").append("svg").attr("width", width)
           .datum(testDataRelative).call(chart);
-          console.log(testDataRelative);
       }
 
       function timelineAxisTop() {
-		console.log("timelineAxisTop");
         var chart = d3.timeline().showAxisTop().stack();
 
         var svg = d3.select("#timelineAxisTop").append("svg").attr("width", width)
@@ -240,7 +235,6 @@
       }
 
       function timelineBgndTick() {
-        console.log("timelineBgndTick stacked background ticks")
         var chart = d3.timeline().stack().showTimeAxisTick().background('grey');
 
         var svg = d3.select("#timelineBgndTick").append("svg").attr("width", width)
