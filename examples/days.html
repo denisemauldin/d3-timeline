@@ -78,11 +78,11 @@
 
 			var testData = [
 					{times:[
-						{"id": "day1", "label": "DAY", "number": "1", "starting_time": 1, "ending_time": 86400},
-						{"id": "day2", "label": "DAY", "number": "2", "starting_time": 86400, "ending_time": 86400*2},
-						{"id": "day3", "label": "DAY", "number": "3", "starting_time": 86400*2, "ending_time": 86400*3},
-						{"id": "day4", "label": "DAY", "number": "4", "starting_time": 86400*3, "ending_time": 86400*4},
-						{"id": "day5", "label": "DAY", "number": "5", "starting_time": 86400*4, "ending_time": 86400*5}
+						{"id": "day1", "label": "DAY", "labelNumber": "1", "starting_time": 1, "ending_time": 86400},
+						{"id": "day2", "label": "DAY", "labelNumber": "2", "starting_time": 86400, "ending_time": 86400*2},
+						{"id": "day3", "label": "DAY", "labelNumber": "3", "starting_time": 86400*2, "ending_time": 86400*3},
+						{"id": "day4", "label": "DAY", "labelNumber": "4", "starting_time": 86400*3, "ending_time": 86400*4},
+						{"id": "day5", "label": "DAY", "labelNumber": "5", "starting_time": 86400*4, "ending_time": 86400*5}
 					]},
 			];
 			var width = 400;
@@ -119,6 +119,9 @@
 			function timelineHover() {
 				var chart = d3.timeline()
 					.linearTime()
+					.itemHeight(60)
+					.labelFloat(25)
+					.itemMargin(0)
 					.colors(colorScale)
 					.showBorderLine()
 					.showBorderFormat({marginTop: 30, marginBottom: 0, width: 3, color: 'black'})

@@ -1,6 +1,5 @@
-(function() {
-    "use strict";
-    d3.timeline = function() {
+(function () {
+  d3.timeline = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
 
 		var hover = function () {},
@@ -9,7 +8,7 @@
 				click = function () {},
 				scroll = function () {},
 				labelFunction = function(label) { return label; },
-				labelFloat = 25,  // floats up this many pixels
+				labelFloat = 0,  // floats up this many pixels
 				navigateLeft = function () {},
 				navigateRight = function () {},
 				orient = "bottom",
@@ -36,8 +35,8 @@
 				timeIsRelative = false,
 				timeIsLinear = false,
 				fullLengthBackgrounds = false,
-				itemHeight = 60,
-				itemMargin = 0,
+				itemHeight = 20,
+				itemMargin = 5,
 				navMargin = 60,
 				showTimeAxis = true,
 				showAxisTop = false,
@@ -58,7 +57,7 @@
 
 			if(showAxisHeaderBackground){ appendAxisHeaderBackground(g, 0, 0); }
 
-			if (showAxisNav) { appendTimeAxisNav(g); }
+			if(showAxisNav){ appendTimeAxisNav(g); }
 
 			var axis = g.append("g")
 				.attr("class", "axis")
@@ -167,6 +166,7 @@
 		function timeline (gParent) {
 			var g = gParent.append("g");
 			var gParentSize = gParent._groups[0][0].getBoundingClientRect();
+
 			var gParentItem = d3.select(gParent._groups[0][0]);
 
 			var yAxisMapping = {},
@@ -180,11 +180,12 @@
 			// if so, substract the first timestamp from each subsequent timestamps
 			if(timeIsRelative){
 				g.each(function (d, i) {
+					var originTime = 0;
 					d.forEach(function (datum, index) {
 						datum.times.forEach(function (time, j) {
 							if(index === 0 && j === 0){
 								originTime = time.starting_time;               //Store the timestamp that will serve as origin
-								time.starting_time = 0;                        //Set the origin
+								time.starting_time = 0;                        //Set tahe origin
 								time.ending_time = time.ending_time - originTime;     //Store the relative time (millis)
 							}else{
 								time.starting_time = time.starting_time - originTime;
@@ -193,6 +194,7 @@
 						});
 					});
 				});
+
 			}
 
 			// check how many stacks we're gonna need
@@ -271,6 +273,7 @@
 				xAxis = d3.axisTop();
 			}
 			if (timeIsLinear) {
+        console.log("timeIsLinear")
 				xScale = d3.scaleLinear()
 					.domain([beginning, ending])
 					.range([margin.left, width - margin.right]);
@@ -296,6 +299,7 @@
 
 			// draw the chart
 			g.each(function(d, i) {
+				console.log("drawing chart with d i ", d, i);
 				chartData = d;
 				d.forEach( function(datum, index){
 					var data = datum.times;
@@ -310,18 +314,10 @@
 
 					if (backgroundColor) { appendBackgroundBar(yAxisMapping, index, g, data, datum); }
 
-					// draws the display elements (circles or rectangles)
-					// v3
-					/*
 					g.selectAll("svg").data(data).enter()
 						.append(function(d, i) {
-								return document.createElementNS(d3.ns.prefix.svg, "display" in d? d.display:display);
-						})
-						*/
-						g.selectAll(display).data(data).enter()
-							.append(function(d, i) {
 									return document.createElementNS(d3.namespaces.svg, "display" in d? d.display:display);
-							})
+						})
 						.attr("x", getXPos)
 						.attr("y", getStackPosition)
 						.attr("width", function (d, i) {
@@ -401,13 +397,14 @@
 
 					// appends the NUMBER LABEL
 					g.selectAll("svg").data(data).enter()
+						.filter(function(d) { return d.labelNumber !== undefined; })
 						.append("text")
 						.attr("class", "textnumbers")
 						.attr("id", function(d) { return d.id })
-						.attr("x", function(d, i) { return getXTextPos(d, i, d.number, '.textnumbers')})
+						.attr("x", function(d, i) { return getXTextPos(d, i, d.labelNumber, '.textnumbers')})
 						.attr("y", getStackTextPosition)
 						.text(function(d) {
-							return d.number;
+							return d.labelNumber;
 						})
 						.on("click", function(d, i){
 							// when clicking on the label, call the click for the rectangle with the same id
@@ -446,6 +443,7 @@
 
 					function getStackPosition(d, i) {
 						if (stacked) {
+              console.log("STACKED POSITION", margin.top, itemHeight, itemMargin, index, yAxisMapping[index], ((itemHeight + itemMargin) * yAxisMapping[index]))
 							return margin.top + (itemHeight + itemMargin) * yAxisMapping[index];
 						}
 						return margin.top;
@@ -515,7 +513,6 @@
 				return margin.left + (d.starting_time - beginning) * scaleFactor;
 			}
 
-
 			function getTextWidth(text, font) {
 			    // re-use canvas object for better performance
 			    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
@@ -552,8 +549,6 @@
 						// set height based off of item height
 						height = gSize.height + gSize.top - gParentSize.top;
 						// set bounding rectangle height
-						// v3
-						// d3.select(gParent[0][0]).attr("height", height);
 						d3.select(gParent._groups[0][0]).attr("height", height);
 					} else {
 						throw "height of the timeline is not set";
@@ -714,6 +709,12 @@
 			labelMargin = m;
 			return timeline;
 		};
+
+    timeline.labelFloat = function (f) {
+      if (!arguments.length) return labelFloat;
+      labelFloat = f;
+      return timeline;
+    };
 
 		timeline.rotateTicks = function (degrees) {
 			if (!arguments.length) return rotateTicks;

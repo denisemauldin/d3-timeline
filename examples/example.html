@@ -2,8 +2,8 @@
 <html>
 <head>
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="../src/d3-timeline.js"></script>
+  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="../src/timeline.js"></script>
 
   <style type="text/css">
     .axis path,
@@ -115,8 +115,8 @@
       function timelineCircle() {
         var chart = d3.timeline()
           .tickFormat( //
-            {format: d3.time.format("%I %p"),
-            tickTime: d3.time.hours,
+            {format: d3.timeFormat("%I %p"),
+            tickTime: d3.timeHours,
             tickInterval: 1,
             tickSize: 30})
           .display("circle"); // toggle between rectangles and circles
@@ -189,8 +189,8 @@
       }
 
       function timelineRectColors() {
-
-        var colorScale = d3.scale.ordinal().range(['#6b0000','#ef9b0f','#ffee00'])
+		console.log("timeRectColors");
+        var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
             .domain(['apple','orange','lemon']);
 
         var chart = d3.timeline()
@@ -202,7 +202,8 @@
       }
 
       function timelineRectColorsPerTime() {
-        var colorScale = d3.scale.ordinal().range(['#6b0000','#ef9b0f','#ffee00'])
+		console.log("timelineRectColorsPerTime");
+        var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
           .domain(['apple','orange','lemon']);
         var chart = d3.timeline()
           .colors( colorScale )
@@ -212,13 +213,15 @@
       }
 
       function timelineRelativeTime() {
+		console.log("timelineRelativeTime");
+		console.log(testDataRelative);
         //This solution is for relative time is from
         //http://stackoverflow.com/questions/11286872/how-do-i-make-a-custom-axis-formatter-for-hours-minutes-in-d3-js
         var chart = d3.timeline()
           .relativeTime()
           .tickFormat({
-            format: function(d) { return d3.time.format("%H:%M")(d) },
-            tickTime: d3.time.minutes,
+            format: function(d) { return d3.timeFormat("%H:%M")(d) },
+            tickTime: d3.timeMinutes,
             tickInterval: 30,
             tickSize: 15,
           });
@@ -229,6 +232,7 @@
       }
 
       function timelineAxisTop() {
+		console.log("timelineAxisTop");
         var chart = d3.timeline().showAxisTop().stack();
 
         var svg = d3.select("#timelineAxisTop").append("svg").attr("width", width)
@@ -236,6 +240,7 @@
       }
 
       function timelineBgndTick() {
+        console.log("timelineBgndTick stacked background ticks")
         var chart = d3.timeline().stack().showTimeAxisTick().background('grey');
 
         var svg = d3.select("#timelineBgndTick").append("svg").attr("width", width)
