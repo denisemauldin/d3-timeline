@@ -1,9 +1,4 @@
-import { axisBottom, axisTop } from 'd3-axis';
-import { range } from 'd3-array';
-import { timeFormat } from 'd3-time-format';
-import { timeHour } from 'd3-time';
-import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
-import { createor, local, matcher, mouse, namespace, namespaces, select, selectAll, selection, selector, selectorAll, styleValue as style, touch, touches, window, event, customEvent } from 'd3-selection';
+import * as d3 from 'd3';
 
 var timeline = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
@@ -23,13 +18,13 @@ var timeline = function() {
 				rowSeparatorsColor = null,
 				backgroundColor = null,
 				tickFormat = {
-					format: timeFormat("%I %p"),
-					tickTime: timeHour,
+					format: d3.timeFormat("%I %p"),
+					tickTime: d3.timeHour,
 					tickInterval: 1,
 					tickSize: 6,
 					tickValues: null
 				},
-				colorCycle = scaleOrdinal(schemeCategory20),
+				colorCycle = d3.scaleOrdinal(d3.schemeCategory20),
 				colorPropertyName = null,
 				display = "rect",
 				beginning = 0,
@@ -177,7 +172,7 @@ var timeline = function() {
     #############################*/
 		function timeline (gParent) {
       var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
-      var gParentItem = select(gParent._groups[0][0]); // the svg
+      var gParentItem = d3.select(gParent._groups[0][0]); // the svg
 
       // append a view for zoom/pan support
       var view = gParent.append("g")
@@ -289,20 +284,20 @@ var timeline = function() {
 			var xScale;
 			var xAxis;
 			if (orient == "bottom") {
-				xAxis = axisBottom();
+				xAxis = d3.axisBottom();
 			} else if (orient == "top") {
-				xAxis = axisTop();
+				xAxis = d3.axisTop();
 			}
 			if (timeIsLinear) {
-				xScale = scaleLinear()
+				xScale = d3.scaleLinear()
 					.domain([beginning, ending])
 					.range([margin.left, width - margin.right]);
 
 				xAxis.scale(xScale)
 					.tickFormat(formatDays)
-					.tickValues(range(0, ending, 86400));
+					.tickValues(d3.range(0, ending, 86400));
 			} else {
-					xScale = scaleTime()
+					xScale = d3.scaleTime()
 						.domain([beginning, ending])
 						.range([margin.left, width - margin.right]);
 
@@ -335,7 +330,7 @@ var timeline = function() {
 
 					g.selectAll("svg").data(data).enter()
 						.append(function(d, i) {
-									return document.createElementNS(namespaces.svg, "display" in d? d.display:display);
+									return document.createElementNS(d3.namespaces.svg, "display" in d? d.display:display);
 						})
 						.attr("x", getXPos)
 						.attr("y", getStackPosition)
@@ -481,7 +476,6 @@ var timeline = function() {
 			if (showTimeAxis) { gX = appendTimeAxis(g, xAxis, timeAxisYPosition); }
 			if (timeAxisTick) { appendTimeAxisTick(g, xAxis, maxStack); }
 
-      console.log("width ", width, "view width", view.attr("width"));
 			if (rotateTicks) {
 				g.selectAll(".tick text")
 					.attr("transform", function(d) {
@@ -552,8 +546,8 @@ var timeline = function() {
 						// set height based off of item height
 						height = gSize.height + gSize.top - gParentSize.top;
 						// set bounding rectangle height
-						select(gParent._groups[0][0]).attr("height", height);
-            select(view._groups[0][0]).attr("height", height);
+						d3.select(gParent._groups[0][0]).attr("height", height);
+            d3.select(view._groups[0][0]).attr("height", height);
 					} else {
 						throw "height of the timeline is not set";
 					}
