@@ -1,5 +1,11 @@
-(function () {
-  d3.timeline = function() {
+import { axisBottom, axisTop } from 'd3-axis';
+import { range } from 'd3-array';
+import { timeFormat } from 'd3-time-format';
+import { timeHour } from 'd3-time';
+import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
+import { createor, local, matcher, mouse, namespace, namespaces, select, selectAll, selection, selector, selectorAll, styleValue as style, touch, touches, window, event, customEvent } from 'd3-selection';
+
+var timeline = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
 
 		var hover = function () {},
@@ -17,13 +23,13 @@
 				rowSeparatorsColor = null,
 				backgroundColor = null,
 				tickFormat = {
-					format: d3.timeFormat("%I %p"),
-					tickTime: d3.timeHour,
+					format: timeFormat("%I %p"),
+					tickTime: timeHour,
 					tickInterval: 1,
 					tickSize: 6,
 					tickValues: null
 				},
-				colorCycle = d3.scaleOrdinal(d3.schemeCategory20),
+				colorCycle = scaleOrdinal(schemeCategory20),
 				colorPropertyName = null,
 				display = "rect",
 				beginning = 0,
@@ -63,6 +69,8 @@
 				.attr("class", "axis")
 				.attr("transform", "translate(" + 0 + "," + yPosition + ")")
 				.call(xAxis);
+
+      return axis;
 		};
 
 		var appendTimeAxisCalendarYear = function (nav) {
@@ -80,6 +88,7 @@
 				.text(calendarLabel)
 			;
 		};
+
 		var appendTimeAxisNav = function (g) {
 			var timelineBlocks = 6;
 			var leftNavMargin = (margin.left - navMargin);
@@ -163,11 +172,23 @@
 				});
 		};
 
+    /*###########################
+    ####    START timeline    ###
+    #############################*/
 		function timeline (gParent) {
-			var g = gParent.append("g");
-			var gParentSize = gParent._groups[0][0].getBoundingClientRect();
+      var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
+      var gParentItem = select(gParent._groups[0][0]); // the svg
 
-			var gParentItem = d3.select(gParent._groups[0][0]);
+      // append a view for zoom/pan support
+      var view = gParent.append("g")
+        .attr("class", "view")
+        .attr("width", gParentSize.width)
+        .attr("height", gParentSize.height)
+        .attr("x", 0.5)
+        .attr("y", 0.5);
+
+			var g = view.append("g").attr("class", "container");
+
 
 			var yAxisMapping = {},
 				maxStack = 1,
@@ -268,21 +289,20 @@
 			var xScale;
 			var xAxis;
 			if (orient == "bottom") {
-				xAxis = d3.axisBottom();
+				xAxis = axisBottom();
 			} else if (orient == "top") {
-				xAxis = d3.axisTop();
+				xAxis = axisTop();
 			}
 			if (timeIsLinear) {
-        console.log("timeIsLinear")
-				xScale = d3.scaleLinear()
+				xScale = scaleLinear()
 					.domain([beginning, ending])
 					.range([margin.left, width - margin.right]);
 
 				xAxis.scale(xScale)
 					.tickFormat(formatDays)
-					.tickValues(d3.range(0, ending, 86400));
+					.tickValues(range(0, ending, 86400));
 			} else {
-					xScale = d3.scaleTime()
+					xScale = scaleTime()
 						.domain([beginning, ending])
 						.range([margin.left, width - margin.right]);
 
@@ -299,7 +319,6 @@
 
 			// draw the chart
 			g.each(function(d, i) {
-				console.log("drawing chart with d i ", d, i);
 				chartData = d;
 				d.forEach( function(datum, index){
 					var data = datum.times;
@@ -316,7 +335,7 @@
 
 					g.selectAll("svg").data(data).enter()
 						.append(function(d, i) {
-									return document.createElementNS(d3.namespaces.svg, "display" in d? d.display:display);
+									return document.createElementNS(namespaces.svg, "display" in d? d.display:display);
 						})
 						.attr("x", getXPos)
 						.attr("y", getStackPosition)
@@ -352,7 +371,6 @@
 							mouseout(d, i, datum);
 						})
 						.on("click", function (d, i) {
-							console.log("this d i", this, d, i)
 							var point = d3.mouse(this);
 							var selectedRect = d3.select(this).node();
 							var selectorLabel = "text#" + selectedRect.id + '.textnumbers';
@@ -443,7 +461,6 @@
 
 					function getStackPosition(d, i) {
 						if (stacked) {
-              console.log("STACKED POSITION", margin.top, itemHeight, itemMargin, index, yAxisMapping[index], ((itemHeight + itemMargin) * yAxisMapping[index]))
 							return margin.top + (itemHeight + itemMargin) * yAxisMapping[index];
 						}
 						return margin.top;
@@ -460,25 +477,11 @@
 			var belowLastItem = (margin.top + (itemHeight + itemMargin) * maxStack);
 			var aboveFirstItem = margin.top;
 			var timeAxisYPosition = showAxisTop ? aboveFirstItem : belowLastItem;
-			if (showTimeAxis) { appendTimeAxis(g, xAxis, timeAxisYPosition); }
+      var gX;
+			if (showTimeAxis) { gX = appendTimeAxis(g, xAxis, timeAxisYPosition); }
 			if (timeAxisTick) { appendTimeAxisTick(g, xAxis, maxStack); }
 
-			/* zoom/scroll is not implemented in d3 v4
-			if (width > gParentSize.width) {
-				var move = function() {
-					var x = Math.min(0, Math.max(gParentSize.width - width, d3.event.translate[0]));
-					zoom.translate([x, 0]);
-					g.attr("transform", "translate(" + x + ",0)");
-					scroll(x*scaleFactor, xScale);
-				};
-
-				var zoom = d3.behavior.zoom().x(xScale).on("zoom", move);
-
-				gParent
-					.attr("class", "scrollable")
-					.call(zoom);
-			}*/
-
+      console.log("width ", width, "view width", view.attr("width"));
 			if (rotateTicks) {
 				g.selectAll(".tick text")
 					.attr("transform", function(d) {
@@ -487,9 +490,9 @@
 							               + this.getBBox().height / 2 + ")";
 					});
 			}
-			// v3
-			//var gSize = g[0][0].getBoundingClientRect();
-			var gSize = g._groups[0][0].getBoundingClientRect();
+
+      // use the size of the elements added to the timeline to set the height
+      var gSize = g._groups[0][0].getBoundingClientRect();
 			setHeight();
 
 			if (showBorderLine) {
@@ -549,7 +552,8 @@
 						// set height based off of item height
 						height = gSize.height + gSize.top - gParentSize.top;
 						// set bounding rectangle height
-						d3.select(gParent._groups[0][0]).attr("height", height);
+						select(gParent._groups[0][0]).attr("height", height);
+            select(view._groups[0][0]).attr("height", height);
 					} else {
 						throw "height of the timeline is not set";
 					}
@@ -558,6 +562,7 @@
 						height = gParentItem.attr("height");
 					} else {
 						gParentItem.attr("height", height);
+            view.attr("height", height);
 					}
 				}
 			}
@@ -828,5 +833,6 @@
 		};
 
 		return timeline;
-	};
-})();
+};
+
+export default timeline;
