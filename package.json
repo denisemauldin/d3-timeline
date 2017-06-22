@@ -1,6 +1,6 @@
 {
-  "name": "d3-timeline",
-  "version": "0.0.2",
+  "name": "d3-timelines",
+  "version": "1.0.0",
   "description": "A d3 v4 version of timeline.  Original inspiration from: https://github.com/jiahuang/d3-timeline",
   "keywords": [
     "d3",
@@ -31,8 +31,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "tape": "4",
     "uglify-js": "2"
-  },
-  "dependencies": {
-    "rollup-plugin-commonjs": "^8.0.2"
   }
 }
