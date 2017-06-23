@@ -1,4 +1,12 @@
-import * as d3 from 'd3';
+
+import { axisBottom, axisTop } from 'd3-axis';
+import { range } from 'd3-array';
+import { timeFormat } from 'd3-time-format';
+import { timeHour } from 'd3-time';
+import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
+import { createor, local, matcher, mouse, namespace, namespaces, select, selectAll, selection, selector, selectorAll, styleValue as style, touch, touches, window, event, customEvent } from 'd3-selection';
+
+//import * as d3 from 'd3';
 
 var timeline = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
@@ -18,13 +26,13 @@ var timeline = function() {
 				rowSeparatorsColor = null,
 				backgroundColor = null,
 				tickFormat = {
-					format: d3.timeFormat("%I %p"),
-					tickTime: d3.timeHour,
+					format: timeFormat("%I %p"),
+					tickTime: timeHour,
 					tickInterval: 1,
 					tickSize: 6,
 					tickValues: null
 				},
-				colorCycle = d3.scaleOrdinal(d3.schemeCategory20),
+				colorCycle = scaleOrdinal(schemeCategory20),
 				colorPropertyName = null,
 				display = "rect",
 				beginning = 0,
@@ -161,7 +169,7 @@ var timeline = function() {
 				.text(hasLabel ? labelFunction(datum.label) : datum.id)
 				.on("click", function (d, i) {
 					console.log("label click!");
-					var point = d3.mouse(this);
+					var point = mouse(this);
 					gParent.append("rect").attr("id", "clickpoint").attr("x", point[0]).attr("width", 10).attr("height", itemHeight);
 					click(d, index, datum, point, xScale.invert(point[0]));
 				});
@@ -172,7 +180,7 @@ var timeline = function() {
     #############################*/
 		function timeline (gParent) {
       var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
-      var gParentItem = d3.select(gParent._groups[0][0]); // the svg
+      var gParentItem = select(gParent._groups[0][0]); // the svg
 
       // append a view for zoom/pan support
       var view = gParent.append("g")
@@ -284,20 +292,20 @@ var timeline = function() {
 			var xScale;
 			var xAxis;
 			if (orient == "bottom") {
-				xAxis = d3.axisBottom();
+				xAxis = axisBottom();
 			} else if (orient == "top") {
-				xAxis = d3.axisTop();
+				xAxis = axisTop();
 			}
 			if (timeIsLinear) {
-				xScale = d3.scaleLinear()
+				xScale = scaleLinear()
 					.domain([beginning, ending])
 					.range([margin.left, width - margin.right]);
 
 				xAxis.scale(xScale)
 					.tickFormat(formatDays)
-					.tickValues(d3.range(0, ending, 86400));
+					.tickValues(range(0, ending, 86400));
 			} else {
-					xScale = d3.scaleTime()
+					xScale = scaleTime()
 						.domain([beginning, ending])
 						.range([margin.left, width - margin.right]);
 
@@ -330,7 +338,7 @@ var timeline = function() {
 
 					g.selectAll("svg").data(data).enter()
 						.append(function(d, i) {
-									return document.createElementNS(d3.namespaces.svg, "display" in d? d.display:display);
+									return document.createElementNS(namespaces.svg, "display" in d? d.display:display);
 						})
 						.attr("x", getXPos)
 						.attr("y", getStackPosition)
@@ -366,10 +374,10 @@ var timeline = function() {
 							mouseout(d, i, datum);
 						})
 						.on("click", function (d, i) {
-							var point = d3.mouse(this);
-							var selectedRect = d3.select(this).node();
+							var point = mouse(this);
+							var selectedRect = select(this).node();
 							var selectorLabel = "text#" + selectedRect.id + '.textnumbers';
-							var selectedLabel = d3.select(selectorLabel).node();
+							var selectedLabel = select(selectorLabel).node();
 							click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 						})
 						.attr("class", function (d, i) {
@@ -397,13 +405,13 @@ var timeline = function() {
 						})
 						.on("click", function(d, i){
 							// when clicking on the label, call the click for the rectangle with the same id
-							var point = d3.mouse(this);
+							var point = mouse(this);
 							var id = this.id;
 							var labelSelector = "text#" + id + ".textnumbers";
-							//var selectedLabel = d3.select(this).node();
-							var selectedLabel = d3.select(labelSelector).node();
+							//var selectedLabel = select(this).node();
+							var selectedLabel = select(labelSelector).node();
 							var selector = "rect#" + id;
-							var selectedRect = d3.select(selector).node();
+							var selectedRect = select(selector).node();
 							click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 						})
 					;
@@ -421,11 +429,11 @@ var timeline = function() {
 						})
 						.on("click", function(d, i){
 							// when clicking on the label, call the click for the rectangle with the same id
-							var point = d3.mouse(this);
+							var point = mouse(this);
 							var id = this.id;
-							var selectedLabel = d3.select(this).node();
+							var selectedLabel = select(this).node();
 							var selector = "rect#" + id;
-							var selectedRect = d3.select(selector).node();
+							var selectedRect = select(selector).node();
 							click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 						})
 					;
@@ -546,8 +554,8 @@ var timeline = function() {
 						// set height based off of item height
 						height = gSize.height + gSize.top - gParentSize.top;
 						// set bounding rectangle height
-						d3.select(gParent._groups[0][0]).attr("height", height);
-            d3.select(view._groups[0][0]).attr("height", height);
+						select(gParent._groups[0][0]).attr("height", height);
+            select(view._groups[0][0]).attr("height", height);
 					} else {
 						throw "height of the timeline is not set";
 					}
