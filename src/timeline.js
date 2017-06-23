@@ -4,7 +4,7 @@ import { range } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 import { timeHour } from 'd3-time';
 import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
-import { createor, local, matcher, mouse, namespace, namespaces, select, selectAll, selection, selector, selectorAll, styleValue as style, touch, touches, window, event, customEvent } from 'd3-selection';
+import { mouse, namespace, namespaces, select } from 'd3-selection';
 
 //import * as d3 from 'd3';
 
