@@ -1,8 +1,10 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
-	(factory((global.d3 = global.d3 || {}),global.d3));
-}(this, function (exports,d3) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-axis'), require('d3-array'), require('d3-time-format'), require('d3-time'), require('d3-scale'), require('d3-selection')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'd3-axis', 'd3-array', 'd3-time-format', 'd3-time', 'd3-scale', 'd3-selection'], factory) :
+	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
+}(this, function (exports,d3Axis,d3Array,d3TimeFormat,d3Time,d3Scale,d3Selection) { 'use strict';
+
+	//import * as d3 from 'd3';
 
 	var timeline = function() {
 			var DISPLAY_TYPES = ["circle", "rect"];
@@ -22,13 +24,13 @@
 					rowSeparatorsColor = null,
 					backgroundColor = null,
 					tickFormat = {
-						format: d3.timeFormat("%I %p"),
-						tickTime: d3.timeHour,
+						format: d3TimeFormat.timeFormat("%I %p"),
+						tickTime: d3Time.timeHour,
 						tickInterval: 1,
 						tickSize: 6,
 						tickValues: null
 					},
-					colorCycle = d3.scaleOrdinal(d3.schemeCategory20),
+					colorCycle = d3Scale.scaleOrdinal(d3Scale.schemeCategory20),
 					colorPropertyName = null,
 					display = "rect",
 					beginning = 0,
@@ -165,7 +167,7 @@
 					.text(hasLabel ? labelFunction(datum.label) : datum.id)
 					.on("click", function (d, i) {
 						console.log("label click!");
-						var point = d3.mouse(this);
+						var point = d3Selection.mouse(this);
 						gParent.append("rect").attr("id", "clickpoint").attr("x", point[0]).attr("width", 10).attr("height", itemHeight);
 						click(d, index, datum, point, xScale.invert(point[0]));
 					});
@@ -176,7 +178,7 @@
 	    #############################*/
 			function timeline (gParent) {
 	      var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
-	      var gParentItem = d3.select(gParent._groups[0][0]); // the svg
+	      var gParentItem = d3Selection.select(gParent._groups[0][0]); // the svg
 
 	      // append a view for zoom/pan support
 	      var view = gParent.append("g")
@@ -288,20 +290,20 @@
 				var xScale;
 				var xAxis;
 				if (orient == "bottom") {
-					xAxis = d3.axisBottom();
+					xAxis = d3Axis.axisBottom();
 				} else if (orient == "top") {
-					xAxis = d3.axisTop();
+					xAxis = d3Axis.axisTop();
 				}
 				if (timeIsLinear) {
-					xScale = d3.scaleLinear()
+					xScale = d3Scale.scaleLinear()
 						.domain([beginning, ending])
 						.range([margin.left, width - margin.right]);
 
 					xAxis.scale(xScale)
 						.tickFormat(formatDays)
-						.tickValues(d3.range(0, ending, 86400));
+						.tickValues(d3Array.range(0, ending, 86400));
 				} else {
-						xScale = d3.scaleTime()
+						xScale = d3Scale.scaleTime()
 							.domain([beginning, ending])
 							.range([margin.left, width - margin.right]);
 
@@ -334,7 +336,7 @@
 
 						g.selectAll("svg").data(data).enter()
 							.append(function(d, i) {
-										return document.createElementNS(d3.namespaces.svg, "display" in d? d.display:display);
+										return document.createElementNS(d3Selection.namespaces.svg, "display" in d? d.display:display);
 							})
 							.attr("x", getXPos)
 							.attr("y", getStackPosition)
@@ -370,10 +372,10 @@
 								mouseout(d, i, datum);
 							})
 							.on("click", function (d, i) {
-								var point = d3.mouse(this);
-								var selectedRect = d3.select(this).node();
+								var point = d3Selection.mouse(this);
+								var selectedRect = d3Selection.select(this).node();
 								var selectorLabel = "text#" + selectedRect.id + '.textnumbers';
-								var selectedLabel = d3.select(selectorLabel).node();
+								var selectedLabel = d3Selection.select(selectorLabel).node();
 								click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 							})
 							.attr("class", function (d, i) {
@@ -401,13 +403,13 @@
 							})
 							.on("click", function(d, i){
 								// when clicking on the label, call the click for the rectangle with the same id
-								var point = d3.mouse(this);
+								var point = d3Selection.mouse(this);
 								var id = this.id;
 								var labelSelector = "text#" + id + ".textnumbers";
-								//var selectedLabel = d3.select(this).node();
-								var selectedLabel = d3.select(labelSelector).node();
+								//var selectedLabel = select(this).node();
+								var selectedLabel = d3Selection.select(labelSelector).node();
 								var selector = "rect#" + id;
-								var selectedRect = d3.select(selector).node();
+								var selectedRect = d3Selection.select(selector).node();
 								click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 							})
 						;
@@ -425,11 +427,11 @@
 							})
 							.on("click", function(d, i){
 								// when clicking on the label, call the click for the rectangle with the same id
-								var point = d3.mouse(this);
+								var point = d3Selection.mouse(this);
 								var id = this.id;
-								var selectedLabel = d3.select(this).node();
+								var selectedLabel = d3Selection.select(this).node();
 								var selector = "rect#" + id;
-								var selectedRect = d3.select(selector).node();
+								var selectedRect = d3Selection.select(selector).node();
 								click(d, index, datum, selectedLabel, selectedRect, xScale.invert(point[0]));
 							})
 						;
@@ -550,8 +552,8 @@
 							// set height based off of item height
 							height = gSize.height + gSize.top - gParentSize.top;
 							// set bounding rectangle height
-							d3.select(gParent._groups[0][0]).attr("height", height);
-	            d3.select(view._groups[0][0]).attr("height", height);
+							d3Selection.select(gParent._groups[0][0]).attr("height", height);
+	            d3Selection.select(view._groups[0][0]).attr("height", height);
 						} else {
 							throw "height of the timeline is not set";
 						}
