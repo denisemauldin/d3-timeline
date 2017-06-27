@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-  <script src="../src/timeline.js"></script>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="../dist/d3-timelines.js"></script>
 
   <style type="text/css">
     .axis path,
@@ -47,11 +47,11 @@
       var width = 500;
 
       function timelineHover() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .relativeTime()
           .tickFormat({
-            format: function(d) { return d3.time.format("%M")(d) },
-            tickTime: d3.time.minutes,
+            format: function(d) { return d3.timeFormat("%M")(d) },
+            tickTime: d3.timeMinutes,
             tickInterval: 15,
             tickSize: 15,
           })
@@ -65,12 +65,12 @@
             div.find('.coloredDiv').css('background-color', colors(i))
             div.find('#name').text(datum.name);
           })
-          .click(function (d, i, datum, point) {
+          .click(function (d, i, datum, selectedLabel, selectedRect, xVal) {
             console.log("timelineHover", datum.name);
-            console.log("point", point)
+            console.log("point", xVal)
             $("#assays").append("<div>\
             <label>Assay Type:</label><select><option value=\"dnase\">DNAseSeq</option><option value=\"rnase\">RNASeq</option></select> \
-            <label>Assay Timepoint:</label><span>"+ d3.round(point[0]) + "</span> \
+            <label>Assay Timepoint:</label><span>"+ Math.round(xVal) + "</span> \
             </div>");
           });
 

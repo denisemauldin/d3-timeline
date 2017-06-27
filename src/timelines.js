@@ -6,9 +6,7 @@ import { timeHour } from 'd3-time';
 import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
 import { mouse, namespace, namespaces, select } from 'd3-selection';
 
-//import * as d3 from 'd3';
-
-var timeline = function() {
+var timelines = function() {
 		var DISPLAY_TYPES = ["circle", "rect"];
 
 		var hover = function () {},
@@ -55,10 +53,12 @@ var timeline = function() {
 				showTodayFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
 				showBorderLine = false,
 				showBorderFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
+        showBorderLineClass = "timeline-border-line",
 				showAxisHeaderBackground = false,
 				showAxisNav = false,
 				showAxisCalendarYear = false,
 				axisBgColor = "white",
+        xAxisClass = 'timeline-xAxis',
 				chartData = {}
 			;
 
@@ -69,7 +69,7 @@ var timeline = function() {
 			if(showAxisNav){ appendTimeAxisNav(g); }
 
 			var axis = g.append("g")
-				.attr("class", "axis")
+				.attr("class", xAxisClass)
 				.attr("transform", "translate(" + 0 + "," + yPosition + ")")
 				.call(xAxis);
 
@@ -176,9 +176,9 @@ var timeline = function() {
 		};
 
     /*###########################
-    ####    START timeline    ###
+    ####    START timelines    ###
     #############################*/
-		function timeline (gParent) {
+		function timelines (gParent) {
       var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
       var gParentItem = select(gParent._groups[0][0]); // the svg
 
@@ -272,19 +272,6 @@ var timeline = function() {
 					}
 					if (days) {
 							output = days + 'd ' + output;
-					}
-					return output;
-			};
-			function formatMinutes(d) {
-					var hours = Math.floor(d / 3600),
-							minutes = Math.floor((d - (hours * 3600)) / 60),
-							seconds = d - (minutes * 60);
-					var output = seconds + 's';
-					if (minutes) {
-							output = minutes + 'm ' + output;
-					}
-					if (hours) {
-							output = hours + 'h ' + output;
 					}
 					return output;
 			};
@@ -408,7 +395,6 @@ var timeline = function() {
 							var point = mouse(this);
 							var id = this.id;
 							var labelSelector = "text#" + id + ".textnumbers";
-							//var selectedLabel = select(this).node();
 							var selectedLabel = select(labelSelector).node();
 							var selector = "rect#" + id;
 							var selectedRect = select(selector).node();
@@ -502,8 +488,8 @@ var timeline = function() {
 					d.forEach(function (datum) {
 						var times = datum.times;
 						times.forEach(function (time) {
-							appendLine(xScale(time.starting_time), showBorderFormat);
-							appendLine(xScale(time.ending_time), showBorderFormat);
+							appendLine(xScale(time.starting_time), showBorderFormat, showBorderLineClass);
+							appendLine(xScale(time.ending_time), showBorderFormat, showBorderLineClass);
 						});
 					});
 				});
@@ -589,12 +575,14 @@ var timeline = function() {
 				// if both are set, do nothing
 			}
 
-			function appendLine(lineScale, lineFormat) {
-				gParent.append("svg:line")
+			function appendLine(lineScale, lineFormat, lineClass) {
+        lineClass = lineClass || "timeline-line";
+				g.append("svg:line")
 					.attr("x1", lineScale)
 					.attr("y1", lineFormat.marginTop)
 					.attr("x2", lineScale)
 					.attr("y2", height - lineFormat.marginBottom)
+          .attr("class", lineClass)
 					.style("stroke", lineFormat.color)//"rgb(6,120,155)"
 					.style("stroke-width", lineFormat.width);
 			}
@@ -603,238 +591,252 @@ var timeline = function() {
 
 		// SETTINGS
 
-		timeline.margin = function (p) {
+		timelines.margin = function (p) {
 			if (!arguments.length) return margin;
 			margin = p;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.orient = function (orientation) {
+		timelines.orient = function (orientation) {
 			if (!arguments.length) return orient;
 			orient = orientation;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.itemHeight = function (h) {
+		timelines.itemHeight = function (h) {
 			if (!arguments.length) return itemHeight;
 			itemHeight = h;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.itemMargin = function (h) {
+		timelines.itemMargin = function (h) {
 			if (!arguments.length) return itemMargin;
 			itemMargin = h;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.navMargin = function (h) {
+		timelines.navMargin = function (h) {
 			if (!arguments.length) return navMargin;
 			navMargin = h;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.height = function (h) {
+		timelines.height = function (h) {
 			if (!arguments.length) return height;
 			height = h;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.width = function (w) {
+		timelines.width = function (w) {
 			if (!arguments.length) return width;
 			width = w;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.display = function (displayType) {
+		timelines.display = function (displayType) {
 			if (!arguments.length || (DISPLAY_TYPES.indexOf(displayType) == -1)) return display;
 			display = displayType;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.labelFormat = function(f) {
+		timelines.labelFormat = function(f) {
 			if (!arguments.length) return labelFunction;
 			labelFunction = f;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.tickFormat = function (format) {
+		timelines.tickFormat = function (format) {
 			if (!arguments.length) return tickFormat;
 			tickFormat = format;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.hover = function (hoverFunc) {
+		timelines.hover = function (hoverFunc) {
 			if (!arguments.length) return hover;
 			hover = hoverFunc;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.mouseover = function (mouseoverFunc) {
+		timelines.mouseover = function (mouseoverFunc) {
 			if (!arguments.length) return mouseover;
 			mouseover = mouseoverFunc;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.mouseout = function (mouseoutFunc) {
+		timelines.mouseout = function (mouseoutFunc) {
 			if (!arguments.length) return mouseout;
 			mouseout = mouseoutFunc;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.click = function (clickFunc) {
+		timelines.click = function (clickFunc) {
 			if (!arguments.length) return click;
 			click = clickFunc;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.scroll = function (scrollFunc) {
+		timelines.scroll = function (scrollFunc) {
 			if (!arguments.length) return scroll;
 			scroll = scrollFunc;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.colors = function (colorFormat) {
+		timelines.colors = function (colorFormat) {
 			if (!arguments.length) return colorCycle;
 			colorCycle = colorFormat;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.beginning = function (b) {
+		timelines.beginning = function (b) {
 			if (!arguments.length) return beginning;
 			beginning = b;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.ending = function (e) {
+		timelines.ending = function (e) {
 			if (!arguments.length) return ending;
 			ending = e;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.labelMargin = function (m) {
+		timelines.labelMargin = function (m) {
 			if (!arguments.length) return labelMargin;
 			labelMargin = m;
-			return timeline;
+			return timelines;
 		};
 
-    timeline.labelFloat = function (f) {
+    timelines.labelFloat = function (f) {
       if (!arguments.length) return labelFloat;
       labelFloat = f;
-      return timeline;
+      return timelines;
     };
 
-		timeline.rotateTicks = function (degrees) {
+		timelines.rotateTicks = function (degrees) {
 			if (!arguments.length) return rotateTicks;
 			rotateTicks = degrees;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.stack = function () {
+		timelines.stack = function () {
 			stacked = !stacked;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.relativeTime = function() {
+		timelines.relativeTime = function() {
 			timeIsRelative = !timeIsRelative;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.linearTime = function() {
+		timelines.linearTime = function() {
 			timeIsLinear = !timeIsLinear;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showBorderLine = function () {
+		timelines.showBorderLine = function () {
 			showBorderLine = !showBorderLine;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showBorderFormat = function(borderFormat) {
+		timelines.showBorderFormat = function(borderFormat) {
 			if (!arguments.length) return showBorderFormat;
 			showBorderFormat = borderFormat;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showToday = function () {
+    // CSS class for the lines added by showBorder
+    timelines.showBorderLineClass = function(borderClass) {
+			if (!arguments.length) return showBorderLineClass;
+			showBorderLineClass = borderClass;
+			return timelines;
+		};
+
+		timelines.showToday = function () {
 			showTodayLine = !showTodayLine;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showTodayFormat = function(todayFormat) {
+		timelines.showTodayFormat = function(todayFormat) {
 			if (!arguments.length) return showTodayFormat;
 			showTodayFormat = todayFormat;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.colorProperty = function(colorProp) {
+		timelines.colorProperty = function(colorProp) {
 			if (!arguments.length) return colorPropertyName;
 			colorPropertyName = colorProp;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.rowSeparators = function (color) {
+		timelines.rowSeparators = function (color) {
 			if (!arguments.length) return rowSeparatorsColor;
 			rowSeparatorsColor = color;
-			return timeline;
+			return timelines;
 
 		};
 
-		timeline.background = function (color) {
+		timelines.background = function (color) {
 			if (!arguments.length) return backgroundColor;
 			backgroundColor = color;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showTimeAxis = function () {
+		timelines.showTimeAxis = function () {
 			showTimeAxis = !showTimeAxis;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showAxisTop = function () {
+		timelines.showAxisTop = function () {
 			showAxisTop = !showAxisTop;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showAxisCalendarYear = function () {
+		timelines.showAxisCalendarYear = function () {
 			showAxisCalendarYear = !showAxisCalendarYear;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showTimeAxisTick = function () {
+		timelines.showTimeAxisTick = function () {
 			timeAxisTick = !timeAxisTick;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.fullLengthBackgrounds = function () {
+		timelines.fullLengthBackgrounds = function () {
 			fullLengthBackgrounds = !fullLengthBackgrounds;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showTimeAxisTickFormat = function(format) {
+		timelines.showTimeAxisTickFormat = function(format) {
 			if (!arguments.length) return timeAxisTickFormat;
 			timeAxisTickFormat = format;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.showAxisHeaderBackground = function(bgColor) {
+		timelines.showAxisHeaderBackground = function(bgColor) {
 			showAxisHeaderBackground = !showAxisHeaderBackground;
 			if(bgColor) { (axisBgColor = bgColor); }
-			return timeline;
+			return timelines;
 		};
 
-		timeline.navigate = function (navigateBackwards, navigateForwards) {
+    // CSS class for the x-axis
+    timelines.xAxisClass = function (axisClass) {
+			if (!arguments.length) return xAxisClass;
+			xAxisClass = axisClass;
+			return timelines;
+		};
+
+		timelines.navigate = function (navigateBackwards, navigateForwards) {
 			if (!arguments.length) return [navigateLeft, navigateRight];
 			navigateLeft = navigateBackwards;
 			navigateRight = navigateForwards;
 			showAxisNav = !showAxisNav;
-			return timeline;
+			return timelines;
 		};
 
-		timeline.version = function() {
+		timelines.version = function() {
 			return "1.0.0";
 		};
 
-		return timeline;
+		return timelines;
 };
 
-export default timeline;
+export default timelines;

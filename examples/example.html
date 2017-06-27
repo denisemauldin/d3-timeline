@@ -3,7 +3,7 @@
 <head>
   <script src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-  <script src="../dist/d3-timeline.js"></script>
+  <script src="../dist/d3-timelines.js"></script>
 
   <style type="text/css">
     .axis path,
@@ -99,21 +99,21 @@
 
       var width = 500;
       function timelineRect() {
-        var chart = d3.timeline();
+        var chart = d3.timelines();
 
         var svg = d3.select("#timeline1").append("svg").attr("width", width)
           .datum(testData).call(chart);
       }
 
       function timelineRectNoAxis() {
-        var chart = d3.timeline().showTimeAxis();
+        var chart = d3.timelines().showTimeAxis();
 
         var svg = d3.select("#timeline1_noaxis").append("svg").attr("width", width)
           .datum(testData).call(chart);
       }
 
       function timelineCircle() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .tickFormat( //
             {format: d3.timeFormat("%I %p"),
             tickTime: d3.timeHours,
@@ -126,7 +126,7 @@
       }
 
       function timelineRectAndCircle() {
-        var chart = d3.timeline();
+        var chart = d3.timelines();
 
         var svg = d3.select("#timeline2_combine").append("svg").attr("width", width)
           .datum(rectAndCircleTestData).call(chart);
@@ -134,7 +134,7 @@
 
       // the stacked, hover, scrollable
       function timelineHover() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .width(width*4)
           .stack()
           .margin({left:70, right:30, top:0, bottom:0})
@@ -159,7 +159,7 @@
       }
 
       function timelineStackedIcons() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
           .ending(1355774400000)
           .showTimeAxisTick() // toggles tick marks
@@ -171,7 +171,7 @@
       }
 
       function timelineLabelColor() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
           .ending(1355774400000)
           .stack() // toggles graph stacking
@@ -182,7 +182,7 @@
       }
 
       function timelineRotatedTicks() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .rotateTicks(45);
 
         var svg = d3.select("#timeline7").append("svg").attr("width", width)
@@ -193,7 +193,7 @@
         var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
             .domain(['apple','orange','lemon']);
 
-        var chart = d3.timeline()
+        var chart = d3.timelines()
             .colors( colorScale )
             .colorProperty('fruit');
 
@@ -204,7 +204,7 @@
       function timelineRectColorsPerTime() {
         var colorScale = d3.scaleOrdinal().range(['#6b0000','#ef9b0f','#ffee00'])
           .domain(['apple','orange','lemon']);
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .colors( colorScale )
           .colorProperty('fruit');
         var svg = d3.select("#timelineColorsPerTime").append("svg").attr("width", width)
@@ -214,7 +214,7 @@
       function timelineRelativeTime() {
         //This solution is for relative time is from
         //http://stackoverflow.com/questions/11286872/how-do-i-make-a-custom-axis-formatter-for-hours-minutes-in-d3-js
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .relativeTime()
           .tickFormat({
             format: function(d) { return d3.timeFormat("%H:%M")(d) },
@@ -228,28 +228,28 @@
       }
 
       function timelineAxisTop() {
-        var chart = d3.timeline().showAxisTop().stack();
+        var chart = d3.timelines().showAxisTop().stack();
 
         var svg = d3.select("#timelineAxisTop").append("svg").attr("width", width)
             .datum(testData).call(chart);
       }
 
       function timelineBgndTick() {
-        var chart = d3.timeline().stack().showTimeAxisTick().background('grey');
+        var chart = d3.timelines().stack().showTimeAxisTick().background('grey');
 
         var svg = d3.select("#timelineBgndTick").append("svg").attr("width", width)
             .datum(testData).call(chart);
       }
 
       function timelineBgnd() {
-        var chart = d3.timeline().stack().background('grey');
+        var chart = d3.timelines().stack().background('grey');
 
         var svg = d3.select("#timelineBgnd").append("svg").attr("width", width)
             .datum(testData).call(chart);
       }
 
    function timelineComplex() {
-        var chart = d3.timeline();
+        var chart = d3.timelines();
      chart.stack();
      chart.showTimeAxisTick();
 //     chart.showAxisTop();

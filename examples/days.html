@@ -3,16 +3,16 @@
 <head>
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-	<script src="../dist/d3-timeline.js"></script>
+	<script src="../dist/d3-timelines.js"></script>
 
 	<style type="text/css">
 
-		.axis path,
-		.axis line {
+		.timeline-xAxis path,
+		.timeline-xAxis line {
 			shape-rendering: crispEdges;
 		}
 
-		.axis text {
+		.timeline-xAxis text {
 			display: none;
 		}
 
@@ -117,7 +117,7 @@
 
 			var timepoints = [];
 			function timelineHover() {
-				var chart = d3.timeline()
+				var chart = d3.timelines()
 					.linearTime()
 					.itemHeight(60)
 					.labelFloat(25)

@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-  <script src="../src/timeline.js"></script>
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="../dist/d3-timelines.js"></script>
 
   <style type="text/css">
     .axis path,
@@ -53,11 +53,11 @@
       var width = 500;
 
       function timelineStackedHover() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .relativeTime()
           .tickFormat({
-            format: function(d) { return d3.time.format("%M")(d) },
-            tickTime: d3.time.minutes,
+            format: function(d) { return d3.timeFormat("%M")(d) },
+            tickTime: d3.timeMinutes,
             tickInterval: 15,
             tickSize: 15,
           })
@@ -81,11 +81,11 @@
       }
 
       function timelineHover() {
-        var chart = d3.timeline()
+        var chart = d3.timelines()
           .relativeTime()
           .tickFormat({
-            format: function(d) { return d3.time.format("%M")(d) },
-            tickTime: d3.time.minutes,
+            format: function(d) { return d3.timeFormat("%M")(d) },
+            tickTime: d3.timeMinutes,
             tickInterval: 15,
             tickSize: 15,
           })
