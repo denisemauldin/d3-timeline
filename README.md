@@ -10,14 +10,14 @@ for a dataset that looks like
 
 ```js
 var testData = [
-  {label: "person a", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {label: "person b", times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]},
-  {label: "person c", times: [
-    {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
-  ];
+	{label: "person a", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{label: "person b", times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]},
+	{label: "person c", times: [
+		{"starting_time": 1355761910000, "ending_time": 1355763910000}]}
+	];
 ```
 
 with a call that looks like
@@ -26,7 +26,7 @@ with a call that looks like
 var chart = d3.timeline();
 
 var svg = d3.select("#timeline1").append("svg").attr("width", 500)
-  .datum(testData).call(chart);
+	.datum(testData).call(chart);
 ```
 
 Works with circles. In case the rectangular edges are too pointy.
@@ -41,11 +41,11 @@ by adding a ``display`` key to the data:
 
 ```js
 var rectAndCircleTestData = [
-    {times: [{"starting_time": 1355752800000, "display": "circle"},
-             {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-    {times: [{"starting_time": 1355759910000, "display":"circle"}, ]},
-    {times: [{"starting_time": 1355761910000, "ending_time": 1355763910000}]}
-  ];
+		{times: [{"starting_time": 1355752800000, "display": "circle"},
+						 {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+		{times: [{"starting_time": 1355759910000, "display":"circle"}, ]},
+		{times: [{"starting_time": 1355761910000, "ending_time": 1355763910000}]}
+	];
 ```
 
 Make a pseudo-gantt chart thingy
@@ -62,14 +62,14 @@ You can also specify an optional `class` key in the data dictionary. This will l
 
 ```js
 var testData = [
-  {class: "pA", label: "person a", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {class: "pB", label: "person b", times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]},
-  {class: "pC", label: "person c", times: [
-    {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
-  ];
+	{class: "pA", label: "person a", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{class: "pB", label: "person b", times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]},
+	{class: "pC", label: "person c", times: [
+		{"starting_time": 1355761910000, "ending_time": 1355763910000}]}
+	];
 ```
 would generate `<rect>` with the following classes: `timelineItem_pA`,`timelineItem_pB`,`timelineItem_pC`. This means that you can dynamically change the visual properties of each timeline item using JQuery like so: `$(".timelineSeries_pA").css("fill","blue");`.
 If no custom class is provided, the class attribute will be generated sequentially in the order they have been provided in. e.g.: `timelineSeries_0`.
@@ -78,10 +78,10 @@ Also optional is an `id` field per data element.
 
 ```js
 var testData = [
-  {label: "person a", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000, "id": "A1"},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000, "id": "A2"}]}
-  ];
+	{label: "person a", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000, "id": "A1"},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000, "id": "A2"}]}
+	];
 ```
 
 This generates `<rect>`s with `A1` and `A2` as ids. If no id is provided, the id attribute will be generated sequentially in the order they have been provided in. e.g.: `timelineItem_0_0`.
@@ -93,33 +93,33 @@ Look at the [examples](examples/example.html) for more details.
 The simplest data format only requires `starting_time` and `ending_time` for each series of data.
 ```js
 [
-  {times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]}
+	{times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]}
 ];
 ```
 
 `label` can be added if you want names by each series of data. In order for this to properly show up, the timeline needs to be called with .stack()
 ```js
 [
-  {label: "person a", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {label: "person b", times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]}
+	{label: "person a", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{label: "person b", times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]}
 ];
 ```
 
 `icon` can be added if you want icons by each series of data. In order for this to properly show up, the timeline needs to be called with .stack(). Icons and labels can also be mixed in together.
 ```js
 [
-  {icon: "path/to/img.png", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {label: "person b", times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]}
+	{icon: "path/to/img.png", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{label: "person b", times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]}
 ];
 ```
 
@@ -127,9 +127,9 @@ The simplest data format only requires `starting_time` and `ending_time` for eac
 Each item in the times array must have `starting_time` and `ending_time`.  You could also specify optional `color` or `label` elements within a times item, as well as a [property mapped to a color](#colorpropertypropertyname).
 ```js
 [
-   {label: "person a", times: [{"color":"green", "label":"Weeee", "starting_time": 1355752800000, "ending_time": 1355759900000}, {"color":"blue", "label":"Weeee", "starting_time": 1355767900000, "ending_time": 1355774400000}]},
-   {label: "person b", times: [{"color":"pink", "label":"Weeee", "starting_time": 1355759910000, "ending_time": 1355761900000}, ]},
-   {label: "person c", times: [{"color":"yellow", "label":"Weeee", "starting_time": 1355761910000, "ending_time": 1355763910000}]}
+	 {label: "person a", times: [{"color":"green", "label":"Weeee", "starting_time": 1355752800000, "ending_time": 1355759900000}, {"color":"blue", "label":"Weeee", "starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	 {label: "person b", times: [{"color":"pink", "label":"Weeee", "starting_time": 1355759910000, "ending_time": 1355761900000}, ]},
+	 {label: "person c", times: [{"color":"yellow", "label":"Weeee", "starting_time": 1355761910000, "ending_time": 1355763910000}]}
 ];
 ```
 
@@ -160,8 +160,8 @@ registers a function to be called when the text for the label needs to
 be generated. Useful if your label looks like this:
 ```
 {
-  en: "my label",
-  fr: "mon étiquette"
+	en: "my label",
+	fr: "mon étiquette"
 }
 ```
 The callback function is passed the whatever the datum.label returns, so
@@ -175,10 +175,10 @@ look something like this:
 sets the formatting of the ticks in the timeline. Defaults to
 ```js
 {
-  format: d3.time.format("%I %p"),
-  tickTime: d3.time.hours,
-  tickInterval: 1,
-  tickSize: 6
+	format: d3.time.format("%I %p"),
+	tickTime: d3.time.hours,
+	tickInterval: 1,
+	tickSize: 6
 }
 ```
 Tick interval/values can be set with:
@@ -201,25 +201,25 @@ sets the data item property name that maps your data items to your color scale. 
 
 ```js
 var colorScale = d3.scale.ordinal().range(['#6b0000','#ef9b0f','#ffee00'])
-            .domain(['apple','orange','lemon']);
+						.domain(['apple','orange','lemon']);
 
 var chart = d3.timeline()
-            .colors( colorScale )
-            .colorProperty('fruit');
+						.colors( colorScale )
+						.colorProperty('fruit');
 ```
 
 And pass this dataset:
 
 ```js
 var testData = [
-  {label: "fruit 1", fruit: "orange", times: [
-    {"starting_time": 1355759910000, "ending_time": 1355761900000}]},
-  {label: "fruit 2", fruit: "apple", times: [
-    {"starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-  {label: "fruit3", fruit: "lemon", times: [
-    {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
-  ];
+	{label: "fruit 1", fruit: "orange", times: [
+		{"starting_time": 1355759910000, "ending_time": 1355761900000}]},
+	{label: "fruit 2", fruit: "apple", times: [
+		{"starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+	{label: "fruit3", fruit: "lemon", times: [
+		{"starting_time": 1355761910000, "ending_time": 1355763910000}]}
+	];
 ```
 Your chart's bar colors will be determined based on the value of the fruit property:
 
@@ -229,11 +229,11 @@ You can also set the color property for a specific time object:
 
 ```js
 var testData = [
-  {label: "fruit 2", fruit: "apple", times: [
-    {fruit: "orange", "starting_time": 1355752800000, "ending_time": 1355759900000},
-    {"starting_time": 1355767900000, "ending_time": 1355774400000},
-    {fruit: "lemon", "starting_time": 1355774400000, "ending_time": 1355775500000}]}
-  ];
+	{label: "fruit 2", fruit: "apple", times: [
+		{fruit: "orange", "starting_time": 1355752800000, "ending_time": 1355759900000},
+		{"starting_time": 1355767900000, "ending_time": 1355774400000},
+		{fruit: "lemon", "starting_time": 1355774400000, "ending_time": 1355775500000}]}
+	];
 ```
 
 Properties set in the time object will override the property set for the series:
@@ -278,10 +278,10 @@ Format for `showTimeAxisTick`. Defaults to ```{stroke: "stroke-dasharray", spaci
 Defaults to
 ```js
 {
-  marginTop: 25,
-  marginBottom: 0,
-  width: 1,
-  color: colorCycle
+	marginTop: 25,
+	marginBottom: 0,
+	width: 1,
+	color: colorCycle
 }
 ```
 ###.rowSeparators(color)
@@ -295,23 +295,29 @@ takes in a callback called on mousemove of the timeline data. Example
 
 ```js
 d3.timeline()
-  .hover(function (d, i, datum) {
-    // d is the current rendering object
-    // i is the index during d3 rendering
-    // datum is the data object
-  });
+	.hover(function (d, i, datum) {
+		// d is the current rendering object
+		// i is the index during d3 rendering
+		// datum is the data object
+	});
 ```
+
+###.xAxisClass
+Default is timeline-xAxis, but can be used to set any class.
+
+###.axisZoom
+Default is true. Takes a boolean.  If set to false, does not allow zooming
 
 ###.mouseover(callback)
 takes in a callback called on mouseover of the timeline data. Example
 
 ```js
 d3.timeline()
-  .mouseover(function (d, i, datum) {
-    // d is the current rendering object
-    // i is the index during d3 rendering
-    // datum is the data object
-  });
+	.mouseover(function (d, i, datum) {
+		// d is the current rendering object
+		// i is the index during d3 rendering
+		// datum is the data object
+	});
 ```
 
 ###.mouseout(callback)
@@ -319,11 +325,11 @@ takes in a callback called on mouseout of the timeline data. Example
 
 ```js
 d3.timeline()
-  .mouseout(function (d, i, datum) {
-    // d is the current rendering object
-    // i is the index during d3 rendering
-    // datum is the data object
-  });
+	.mouseout(function (d, i, datum) {
+		// d is the current rendering object
+		// i is the index during d3 rendering
+		// datum is the data object
+	});
 ```
 
 ###.click(callback)
@@ -331,11 +337,11 @@ takes in a callback called on click of the timeline data. Example
 
 ```js
 d3.timeline()
-  .click(function (d, i, datum) {
-    // d is the current rendering object
-    // i is the index during d3 rendering
-    // datum is the data object
-  });
+	.click(function (d, i, datum) {
+		// d is the current rendering object
+		// i is the index during d3 rendering
+		// datum is the data object
+	});
 ```
 
 ###.scroll(callback)
@@ -343,11 +349,17 @@ takes in a callback called on scroll of the timeline data. Example
 
 ```js
 d3.timeline()
-  .scroll(function (x, scale) {
-    // x is the current position of the scroll
-    // scale is the scale of the axis used
-  });
+	.scroll(function (x, scale) {
+		// x is the current position of the scroll
+		// scale is the scale of the axis used
+	});
 ```
+
+## Build
+
+To build:
+- `npm install`
+- copy the build/d3-timelines.js to dist/d3-timelines.js
 
 ##License
 MIT

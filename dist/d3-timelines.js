@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-axis'), require('d3-array'), require('d3-time-format'), require('d3-time'), require('d3-scale'), require('d3-selection')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'd3-axis', 'd3-array', 'd3-time-format', 'd3-time', 'd3-scale', 'd3-selection'], factory) :
-	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
-}(this, function (exports,d3Axis,d3Array,d3TimeFormat,d3Time,d3Scale,d3Selection) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-axis'), require('d3-array'), require('d3-time-format'), require('d3-time'), require('d3-scale'), require('d3-selection'), require('d3-zoom')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'd3-axis', 'd3-array', 'd3-time-format', 'd3-time', 'd3-scale', 'd3-selection', 'd3-zoom'], factory) :
+	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
+}(this, function (exports,d3Axis,d3Array,d3TimeFormat,d3Time,d3Scale,d3Selection,d3Zoom) { 'use strict';
 
 	var timelines = function() {
 			var DISPLAY_TYPES = ["circle", "rect"];
@@ -28,6 +28,9 @@
 						tickSize: 6,
 						tickValues: null
 					},
+					allowZoom = true,
+					axisBgColor = "white",
+					chartData = {},
 					colorCycle = d3Scale.scaleOrdinal(d3Scale.schemeCategory20),
 					colorPropertyName = null,
 					display = "rect",
@@ -35,6 +38,7 @@
 					labelMargin = 0,
 					ending = 0,
 					margin = {left: 30, right:30, top: 30, bottom:30},
+					maxZoom = 5,
 					stacked = false,
 					rotateTicks = false,
 					timeIsRelative = false,
@@ -51,13 +55,11 @@
 					showTodayFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
 					showBorderLine = false,
 					showBorderFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
-	        showBorderLineClass = "timeline-border-line",
+					showBorderLineClass = "timeline-border-line",
 					showAxisHeaderBackground = false,
 					showAxisNav = false,
 					showAxisCalendarYear = false,
-					axisBgColor = "white",
-	        xAxisClass = 'timeline-xAxis',
-					chartData = {}
+					xAxisClass = 'timeline-xAxis'
 				;
 
 			var appendTimeAxis = function(g, xAxis, yPosition) {
@@ -71,7 +73,7 @@
 					.attr("transform", "translate(" + 0 + "," + yPosition + ")")
 					.call(xAxis);
 
-	      return axis;
+				return axis;
 			};
 
 			var appendTimeAxisCalendarYear = function (nav) {
@@ -146,8 +148,9 @@
 
 			var appendBackgroundBar = function (yAxisMapping, index, g, data, datum) {
 				var greenbarYAxis = ((itemHeight + itemMargin) * yAxisMapping[index]) + margin.top;
-				g.selectAll("svg").data(data).enter()
-					.insert("rect")
+				g.selectAll("svg")
+					.data(data).enter()
+					.insert("rect", ":first-child")
 					.attr("class", "row-green-bar")
 					.attr("x", fullLengthBackgrounds ? 0 : margin.left)
 					.attr("width", fullLengthBackgrounds ? width : (width - margin.right - margin.left))
@@ -166,30 +169,27 @@
 					.attr("transform", "translate(" + labelMargin + "," + rowsDown + ")")
 					.text(hasLabel ? labelFunction(datum.label) : datum.id)
 					.on("click", function (d, i) {
+
 						console.log("label click!");
 						var point = d3Selection.mouse(this);
-						gParent.append("rect").attr("id", "clickpoint").attr("x", point[0]).attr("width", 10).attr("height", itemHeight);
+						gParent.append("rect")
+							.attr("id", "clickpoint")
+							.attr("x", point[0])
+							.attr("width", 10)
+							.attr("height", itemHeight);
+
 						click(d, index, datum, point, xScale.invert(point[0]));
 					});
 			};
 
-	    /*###########################
-	    ####    START timelines    ###
-	    #############################*/
+			/*###########################
+			####    START timelines    ###
+			#############################*/
 			function timelines (gParent) {
-	      var gParentSize = gParent._groups[0][0].getBoundingClientRect(); // the svg size
-	      var gParentItem = d3Selection.select(gParent._groups[0][0]); // the svg
+				var gParentSize = gParent.node().getBoundingClientRect(); // the svg size
+				var gParentItem = d3Selection.select(gParent.node()); // the svg
 
-	      // append a view for zoom/pan support
-	      var view = gParent.append("g")
-	        .attr("class", "view")
-	        .attr("width", gParentSize.width)
-	        .attr("height", gParentSize.height)
-	        .attr("x", 0.5)
-	        .attr("y", 0.5);
-
-				var g = view.append("g").attr("class", "container");
-
+				var g = gParent.append("g").attr("class", "container");
 
 				var yAxisMapping = {},
 					maxStack = 1,
@@ -302,8 +302,12 @@
 				if (tickFormat.tickValues !== null) {
 					xAxis.tickValues(tickFormat.tickValues);
 				} else {
-					xAxis.ticks(tickFormat.numTicks || tickFormat.tickTime, tickFormat.tickInterval);
+					xAxis.tickArguments(tickFormat.numTicks || [tickFormat.tickTime, tickFormat.tickInterval]);
 				}
+
+				// append a view for zoom/pan support
+				var view = g.append("g")
+					.attr("class", "view");
 
 				// draw the chart
 				g.each(function(d, i) {
@@ -321,7 +325,8 @@
 
 						if (backgroundColor) { appendBackgroundBar(yAxisMapping, index, g, data, datum); }
 
-						g.selectAll("svg").data(data).enter()
+						view.selectAll("svg")
+							.data(data).enter()
 							.append(function(d, i) {
 										return document.createElementNS(d3Selection.namespaces.svg, "display" in d? d.display:display);
 							})
@@ -350,13 +355,13 @@
 								return colorCycle(index);
 							})
 							.on("mousemove", function (d, i) {
-								hover(d, index, datum);
+								hover(d, index, datum, i);
 							})
 							.on("mouseover", function (d, i) {
-								mouseover(d, i, datum);
+								mouseover(d, i, datum, i);
 							})
 							.on("mouseout", function (d, i) {
-								mouseout(d, i, datum);
+								mouseout(d, i, datum, i);
 							})
 							.on("click", function (d, i) {
 								var point = d3Selection.mouse(this);
@@ -379,7 +384,8 @@
 						;
 
 						// appends the labels to the boxes - DAY/HOUR LABEL
-						g.selectAll("svg").data(data).enter()
+						view.selectAll("svg")
+							.data(data).enter()
 							.append("text")
 							.attr("class", "textlabels")
 							.attr("id", function(d) { return d.id })
@@ -401,7 +407,7 @@
 						;
 
 						// appends the NUMBER LABEL
-						g.selectAll("svg").data(data).enter()
+						view.selectAll("svg").data(data).enter()
 							.filter(function(d) { return d.labelNumber !== undefined; })
 							.append("text")
 							.attr("class", "textnumbers")
@@ -464,21 +470,62 @@
 				var belowLastItem = (margin.top + (itemHeight + itemMargin) * maxStack);
 				var aboveFirstItem = margin.top;
 				var timeAxisYPosition = showAxisTop ? aboveFirstItem : belowLastItem;
-	      var gX;
+				var gX;
 				if (showTimeAxis) { gX = appendTimeAxis(g, xAxis, timeAxisYPosition); }
 				if (timeAxisTick) { appendTimeAxisTick(g, xAxis, maxStack); }
+
+				if (width > gParentSize.width) { // only if the scrolling should be allowed
+					var move = function() {
+						g.select(".view")
+						.attr("transform", "translate(" + d3Selection.event.transform.x + ",0)"
+															 + "scale(" + d3Selection.event.transform.k + " 1)");
+
+						g.selectAll(".timeline-xAxis")
+							.attr("transform", function(d) {
+								 return "translate(" + d3Selection.event.transform.x + ", " + timeAxisYPosition + ")"
+											+ "scale(" + d3Selection.event.transform.k + " 1)";
+							});
+
+						var new_xScale = d3Selection.event.transform.rescaleX(xScale);
+						g.selectAll('.timeline-xAxis').call(function(d) { xAxis.scale(new_xScale); });
+
+						var xpos = -d3Selection.event.transform.x;
+						scroll(xpos, xScale);
+					};
+				};
+
+				var zoom = d3Zoom.zoom()
+					.scaleExtent([0, maxZoom]) // max zoom defaults to 5
+					.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
+					.on("zoom", move);
+
+				gParent
+					.attr("class", "scrollable")
+					.call(zoom);
+
+				if (! allowZoom) {
+					g.on("wheel", function() {
+						d3Selection.event.preventDefault();
+						d3Selection.event.stopImmediatePropagation();
+					});
+					g.on("dblclick.zoom", function() {
+						d3Selection.event.preventDefault();
+						d3Selection.event.stopImmediatePropagation();
+					});
+				}
 
 				if (rotateTicks) {
 					g.selectAll(".tick text")
 						.attr("transform", function(d) {
 							return "rotate(" + rotateTicks + ")translate("
-								               + (this.getBBox().width / 2 + 10) + "," // TODO: change this 10
-								               + this.getBBox().height / 2 + ")";
+															 + (this.getBBox().width / 2 + 10) + "," // TODO: change this 10
+															 + this.getBBox().height / 2 + ")";
 						});
 				}
 
-	      // use the size of the elements added to the timeline to set the height
-	      var gSize = g._groups[0][0].getBoundingClientRect();
+				// use the size of the elements added to the timeline to set the height
+				//var gSize = g._groups[0][0].getBoundingClientRect();
+				var gSize = g.node().getBoundingClientRect();
 				setHeight();
 
 				if (showBorderLine) {
@@ -503,12 +550,12 @@
 				}
 
 				function getTextWidth(text, font) {
-				    // re-use canvas object for better performance
-				    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-				    var context = canvas.getContext("2d");
-				    context.font = font;
-				    var metrics = context.measureText(text);
-				    return metrics.width;
+						// re-use canvas object for better performance
+						var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+						var context = canvas.getContext("2d");
+						context.font = font;
+						var metrics = context.measureText(text);
+						return metrics.width;
 				}
 
 				function getXTextPos(d, i, text, style) {
@@ -533,22 +580,22 @@
 				}
 
 				function setHeight() {
-					if (!height && !gParentItem.attr("height")) {
+					if (!height && !gParentItem.height) {
 						if (itemHeight) {
 							// set height based off of item height
 							height = gSize.height + gSize.top - gParentSize.top;
 							// set bounding rectangle height
-							d3Selection.select(gParent._groups[0][0]).attr("height", height);
-	            d3Selection.select(view._groups[0][0]).attr("height", height);
+							d3Selection.select(gParent).node().attr("height", height);
+							//select(view).node().attr("height", height);
 						} else {
 							throw "height of the timeline is not set";
 						}
 					} else {
 						if (!height) {
-							height = gParentItem.attr("height");
+							height = gParentSize.height;
 						} else {
-							gParentItem.attr("height", height);
-	            view.attr("height", height);
+							gParentItem.node().attr("height", height);
+							//view.node().attr("height", height);
 						}
 					}
 				}
@@ -556,16 +603,16 @@
 				function setWidth() {
 					if (!width && !gParentSize.width) {
 						try {
-							width = gParentItem.attr("width");
+							width = gParentItem.node().attr("width");
 							if (!width) {
 								throw "width of the timeline is not set. As of Firefox 27, timeline().with(x) needs to be explicitly set in order to render";
 							}
 						} catch (err) {
 							console.log( err );
 						}
-					} else if (!(width && gParentSize.width)) {
+					} else if (!width && gParentSize.width) {
 						try {
-							width = gParentItem.attr("width");
+							width = gParentSize.width;
 						} catch (err) {
 							console.log( err );
 						}
@@ -574,13 +621,13 @@
 				}
 
 				function appendLine(lineScale, lineFormat, lineClass) {
-	        lineClass = lineClass || "timeline-line";
-					g.append("svg:line")
+					lineClass = lineClass || "timeline-line";
+					view.append("svg:line")
 						.attr("x1", lineScale)
 						.attr("y1", lineFormat.marginTop)
 						.attr("x2", lineScale)
 						.attr("y2", height - lineFormat.marginBottom)
-	          .attr("class", lineClass)
+						.attr("class", lineClass)
 						.style("stroke", lineFormat.color)//"rgb(6,120,155)"
 						.style("stroke-width", lineFormat.width);
 				}
@@ -649,6 +696,18 @@
 				return timelines;
 			};
 
+			timelines.allowZoom = function (zoomSetting) {
+				if (!arguments.length) return allowZoom;
+				allowZoom = zoomSetting;
+				return timelines;
+			};
+
+			timelines.maxZoom = function (max) {
+				if (!arguments.length) return maxZoom;
+				maxZoom = max;
+				return timelines;
+			};
+
 			timelines.hover = function (hoverFunc) {
 				if (!arguments.length) return hover;
 				hover = hoverFunc;
@@ -703,11 +762,11 @@
 				return timelines;
 			};
 
-	    timelines.labelFloat = function (f) {
-	      if (!arguments.length) return labelFloat;
-	      labelFloat = f;
-	      return timelines;
-	    };
+			timelines.labelFloat = function (f) {
+				if (!arguments.length) return labelFloat;
+				labelFloat = f;
+				return timelines;
+			};
 
 			timelines.rotateTicks = function (degrees) {
 				if (!arguments.length) return rotateTicks;
@@ -741,8 +800,8 @@
 				return timelines;
 			};
 
-	    // CSS class for the lines added by showBorder
-	    timelines.showBorderLineClass = function(borderClass) {
+			// CSS class for the lines added by showBorder
+			timelines.showBorderLineClass = function(borderClass) {
 				if (!arguments.length) return showBorderLineClass;
 				showBorderLineClass = borderClass;
 				return timelines;
@@ -815,8 +874,8 @@
 				return timelines;
 			};
 
-	    // CSS class for the x-axis
-	    timelines.xAxisClass = function (axisClass) {
+			// CSS class for the x-axis
+			timelines.xAxisClass = function (axisClass) {
 				if (!arguments.length) return xAxisClass;
 				xAxisClass = axisClass;
 				return timelines;

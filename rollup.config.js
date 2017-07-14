@@ -15,7 +15,8 @@ export default {
 		"d3-time-format": "d3",
 		"d3-time": "d3",
 		"d3-selection": "d3",
-		"d3-scale": "d3"
+		"d3-scale": "d3",
+		"d3-zoom": "d3"
 	},
 	plugins: [nodeResolve({ jsnext: true, main: true})]
 };

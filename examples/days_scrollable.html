@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<script src="../dist/d3-timelines.js"></script>
+
+	<style type="text/css">
+
+		.timeline-xAxis path,
+		.timeline-xAxis line {
+			shape-rendering: crispEdges;
+		}
+
+		.timeline-xAxis text {
+			display: none;
+		}
+
+		.textlabels {
+			font-size: 12pt;
+			font-family: Helvetica;
+		}
+
+		.textnumbers {
+			font-size: 18pt;
+			font-family: Helvetica;
+		}
+
+		.timeline-label {
+			font-family: sans-serif;
+			font-size: 12px;
+		}
+
+		.coloredDiv {
+			height:20px; width:20px; float:left;
+		}
+	</style>
+	<script type="text/javascript">
+
+		window.onload = function() {
+
+			var select = document.getElementById("selectNumber");
+			var options = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+
+			for (var i = 0; i < options.length; i++) {
+					var opt = options[i];
+					var el = document.createElement("option");
+					el.textContent = opt;
+					el.value = opt;
+					select.appendChild(el);
+			}
+
+
+			var formatDay = function(d) {
+					var days = Math.floor(d / 86400),
+							hours = Math.floor((d - (days * 86400)) / 3600),
+							minutes = Math.floor((d - (days * 86400) - (hours * 3600)) / 60);
+							//seconds = d - (days * 86400) - (hours * 3600) - (minutes * 60);
+					var output = '';
+					//if (seconds) {
+					//	output = seconds + 's';
+					//}
+					//if (minutes) {
+					//		output = minutes + 'm ' + output;
+					//}
+					//if (hours) {
+					//		output = hours + 'h ' + output;
+					//}
+					if (days) {
+							output = days + 'd ' + output;
+					}
+					if (output === '') {
+						output = 'Start';
+					}
+					return output;
+			};
+
+			// beginning has to be > 0
+	/*		var testData = [
+//				{name: "Hydrocortisone", times: [{"starting_time": 1, "ending_time": 691201, "concentration": "10.0 uM"}]},  // 0-8 days (8)
+//				{name: "SCF", times: [{"starting_time": 691201, "ending_time": 1382401, "concentration": "100.0 ng/mL"}]}, // 8-16 days (8)
+				{name: "IL3", times: [
+					{"starting_time": 1382401, "ending_time": 2073601, "concentration": "5.0 ng/mL"},  // 16-24 days (8)
+					{"starting_time": 2764801, "ending_time": 3024001, "concentration": "5.0 ng/mL"},   // 32-35 days, (3) after Epo
+				]}, // 8 days, 3 days
+				{name: "Epo", times: [{"starting_time": 2073601, "ending_time": 2764801, "concentration": "3.0 Ul/ml"}]}, // 24-32 days (8)
+//				{name: "Epo Feeder layer", times: [{"starting_time": 3024001, "ending_time": 3369601, "concentration": "3.0 Ul/ml"}]},  // 35-39 days (4)
+//				{name: "Epo chemical Feeder layer", times: [{"starting_time": 3369601, "ending_time": 3715201, "concentration": "3.0 Ul/ml"}]}  // 39-43 days (4)
+			];
+*/
+
+var marginLeft = 10;
+var marginRight = 10;
+
+		var testData = [];
+		window.constructTimes = function(days) {
+			var width = 400;
+			var newWidth = 400;
+			var times = [];
+			for (var i = 1; i <= days; i++) {
+				times.push({"id": "day" + i, "label": "DAY", "labelNumber": i, "starting_time":  (i * 86400) + 1, "ending_time": ((i + 1) * 86400)})
+			}
+			testData = [
+					{times:times},
+			];
+			var boxWidth = 47;
+			var dataLength = testData[0].times.length;
+			var viewWidth = 400 / dataLength;
+			var sf = boxWidth/ viewWidth;
+			var newWidth = width;
+			if (sf > 1) {
+				newWidth = Math.round(width * sf) + marginLeft + marginRight;
+			} else {
+				width = (boxWidth * dataLength) + marginLeft + marginRight;
+				newWidth = width;
+			}
+			return width, newWidth;
+		}
+
+			var width, newWidth = constructTimes(10);
+			// d3 v3
+			// var colorScale = d3.scale.ordinal().range(['#ffffff']);
+			var colorScale = d3.scaleOrdinal().range(['#ffffff']);
+			function buildTable() {
+				var tbody = d3.select("#assays > tbody")
+				var rows = tbody.selectAll('tr').data(timepoints, function(d) { return d.id });
+
+				rows.enter()
+					.append("tr")
+					.attr("id", (d) => d.id)
+					.html(function(d) {
+						var html = "<td><select id=\"assay_" + d.id + "\" ><option value=\"dnase\">DNAseSeq</option><option value=\"rnase\">RNASeq</option></select></td>\
+											<td><input id=\"duration_" + d.id + "\" type=\"text\" value=\""+ formatDay(Math.round(d.duration)) + "\"></input></td>\
+											<td><input id=\"replication_" + d.id + "\" type=\"text\"></input></td>";
+						return html;
+					})
+					.attr("id", function(d) { return d.id });
+
+				rows.exit().remove();
+			}
+
+			function secondFormat(num) {
+				var h = Math.floor( num / 3600 );
+				var m = Math.floor((num - h * 3600) / 60 );
+				var s = num - (h * 3600 + m * 60);
+				return ( h < 10 ? "0" + h : h ) + ":" + ( m < 10 ? "0" + m : m ) + ":" + ( s < 10 ? "0" + s : s );
+			}
+
+			var timepoints = [];
+			function timelineHover(width, newWidth) {
+				var chart = d3.timelines()
+					.linearTime()
+					.allowZoom(false)
+					.itemHeight(60)
+					.labelFloat(25)
+					.itemMargin(0)
+					.width(newWidth)
+					.colors(colorScale)
+					.showBorderLine()
+					.showBorderFormat({marginTop: 30, marginBottom: 0, width: 3, color: 'black'})
+					//.showTimeAxisTick()
+					//.showTimeAxisTickFormat({stroke: "4px" })
+					.margin({left: marginLeft, right:marginRight, top:30, bottom:0})
+					.hover(function (d, i, datum) {
+					// d is the current rendering object
+					// i is the index during d3 rendering
+					// datum is the id object
+						var div = $('#hoverRes');
+						//var colors = chart.colors();
+						//div.find('.coloredDiv').css('background-color', colors(i));
+						div.find('#name').text(datum.name);
+					})
+					.click(function (d, i, datum, labelElement, rectElement, duration) {
+						var ele = d3.select(rectElement);
+						var labelEle = d3.select(labelElement);
+						rectElement.duration = duration;
+						if (timepoints.includes(rectElement)) {
+							ele.style("fill", "#ffffff");
+							labelEle.style("fill", "#000000");
+							var index = timepoints.indexOf(rectElement);
+							timepoints.splice(index, 1);
+						} else {
+							timepoints.push(rectElement);
+							labelEle.style("fill", "#ffffff");
+							ele.style("fill", "#e2ae79");
+						}
+						buildTable();
+					})
+					.rotateTicks(45);
+
+
+				// v3 returns [Array(1)] => [svg]
+				// v4 returns
+				var svg = d3.select("#timeline").append("svg").attr("width", width)
+					.datum(testData).call(chart);
+			}
+
+			timelineHover(width, newWidth);
+/*
+		function createTable() {
+				var table = $("<tbody></tbody>");
+				for (var i = 0; i < testData.length; i++ ){
+					var step = testData[i];
+					var times = testData[i]['times'];
+					for (var j = 0; j < times.length; j++ ) {
+						var $line = $("<tr></tr>");
+						$line.append($("<td></td>").html(step.name));
+						$line.append($("<td></td>").html(times[j].concentration));
+						$line.append($("<td></td>").html(formatDay(times[j].starting_time)));
+						$line.append($("<td></td>").html(formatDay(times[j].ending_time - times[j].starting_time)));
+						table.append($line);
+					}
+				}
+
+				return table;
+		}
+
+			$("#treatments").append(createTable());
+		*/
+		window.updateTimeline = function(number) {
+					d3.select("#timeline").select('svg').remove();
+					timepoints = [];
+					var uwidth, unewWidth = constructTimes(number);
+					timelineHover(uwidth, unewWidth);
+				}
+
+		}
+	</script>
+</head>
+<body>
+
+	<div>
+		<h3>Differentiation</h3>
+	<div id="protocol">Erythroid - J.Namath Nature 2010</div>
+	<div id="days">11 Days</div>
+		<div id="timeline"></div>
+		<div>
+			<select id="selectNumber" onChange="window.updateTimeline(this.value);"></select>
+		</div>
+	</div>
+	<div>&nbsp;
+	</div>
+	<div>
+		<h3>Assays</h3>
+	<table id="assays">
+		<thead>
+			<tr>
+			<th>Assay Type</th>
+			<th>Timepoint</th>
+			<th>Replication</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</div>
+
+</body>
+</html>
