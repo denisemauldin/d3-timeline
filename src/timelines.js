@@ -583,7 +583,7 @@ var timelines = function() {
 			}
 
 			function setHeight() {
-				if (!height && !gParentItem.height) {
+				if (!height && !gParentSize.height) {
 					if (itemHeight) {
 						// set height based off of item height
 						height = gSize.height + gSize.top - gParentSize.top;
