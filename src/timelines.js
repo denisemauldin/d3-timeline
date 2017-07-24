@@ -503,7 +503,7 @@ var timelines = function() {
 				.on("zoom", move);
 
 			gParent
-				.attr("class", "scrollable")
+				.classed("scrollable", true)
 				.call(zoom);
 
 			if (! allowZoom) {
