@@ -1,6 +1,6 @@
 # d3-timeline
 
-A d3 v4 version of d3-timeline by jiahuang - https://github.com/jiahuang/d3-timeline
+A d3 v4 version of d3-timeline 
 
 Get something that looks like
 
@@ -124,6 +124,7 @@ The simplest data format only requires `starting_time` and `ending_time` for eac
 ```
 
 ###  'times' elements array
+
 Each item in the times array must have `starting_time` and `ending_time`.  You could also specify optional `color` or `label` elements within a times item, as well as a [property mapped to a color](#colorpropertypropertyname).
 ```js
 [
@@ -135,29 +136,38 @@ Each item in the times array must have `starting_time` and `ending_time`.  You c
 
 
 ##Method Calls
+
 All methods that take in arguments return the current settings if no argument is passed.
 
 ### .width(width)
+
 sets the width of the timeline. If the width of the timeline is longer than the width of the svg object, the timeline will automatically scroll. The width of the timeline will default to the width of the svg if width is not set.
 
 ### .height(height)
+
 sets the height of the timeline. The height of the timeline will be automatically calculated from the height of each item if height is not set on the timeline or the svg.
 
 ### .itemHeight(height)
+
 sets the height of the data series in the timeline. Defaults to 20px.
 
 ### .itemMargin(height)
+
 sets the margin between the data series in the timeline. Defaults to 5px.
 
 ### .margin({left: , right: , top: , bottom: })
+
 sets the margin of the entire timeline inside of the svg. Defaults to 30px all around.
 
 ### .display("circle" | "rect")
+
 Displays the data series as either circles or rectangles. Defaults to "rect".
 
 ### .labelFormat(callback)
+
 registers a function to be called when the text for the label needs to
 be generated. Useful if your label looks like this:
+
 ```
 {
 	en: "my label",
@@ -172,7 +182,9 @@ look something like this:
 ```
 
 ### .tickFormat({format: , tickTime: , tickInterval: , tickSize: , numTicks: , tickValues})
+
 sets the formatting of the ticks in the timeline. Defaults to
+
 ```js
 {
 	format: d3.time.format("%I %p"),
@@ -188,15 +200,19 @@ Tick interval/values can be set with:
 - ``tickValues``
 
 ### .rotateTicks(degrees)
+
 sets the degree of rotation of the tickmarks. Defaults to no rotation (0 degrees).
 
 ### .orient("bottom" | "top")
+
 sets the placement of the axis. Defaults to bottom.
 
 ### .colors(callback)
+
 sets the d3 color scale the data series in the timeline. Defaults to `d3.scale.category20()`.
 
 ### .colorProperty(propertyName)
+
 sets the data item property name that maps your data items to your color scale. For example if you set your chart's `colors()` and `colorsProperty()` as follows:
 
 ```js
@@ -241,41 +257,53 @@ Properties set in the time object will override the property set for the series:
 ![Timeline With Per-Time Colors](examples/timeline8.png)
 
 ### .beginning(date)
+
 sets the time that the timeline should start. If `beginning` and `ending` are not set, the timeline will calculate it based off of the smallest and largest times.
 
 ### .ending(date)
+
 sets the time that the timeline should end. If `beginning` and `ending` are not set, the timeline will calculate it based off of the smallest and largest times.
 
 ### .stack()
+
 Takes in no arguments. Toggles the stacking/unstacking of data series in the timeline. Needs to be true in order for icons and labels to show up properly.
 
 ### .relativeTime()
+
 Takes in no arguments. Toggles the calculation and use of relative timestamps. The origin of the timeline will be set to 0 and the starting_time of the first data dictionary in the data array will be subtracted from every subsequent timestamp.
 
 ### .showToday()
+
 Takes in no arguments. Toggles a vertical line showing the current Date.now() time. Uses showTodayFormat for the line formatting.
 
 ### .showTodayFormat({marginTop: , marginBottom: , width: , color: })
+
 Sets the formatting of the showToday line. Color cycle can also be of the format `rgb(x, y, z)`.
 
 ### .showBorderLine()
+
 Takes in no arguments. Toggles a vertical line showing the borders of one specific timeline. Uses showBorderFormat for the line formatting.
 
 ### .showBorderFormat({marginTop: , marginBottom:, width: , color: })
+
 Sets the formatting of the showBorder line. Color cycle can also be of the format `rgb(x, y, z)`.
 
 ### .showTimeAxis()
+
 Takes in no arguments. Toggles the visibility of the time axis.
 
 ### .showTimeAxisTick()
+
 Takes in no arguments. Shows tick marks along the X axis according to the arguments for `showTimeAxisTickFormat`. Useful for datasets with a lot of stacked elements.
 
 ![Timeline With tick marks](examples/timeline9.png)
 
 ### .showTimeAxisTickFormat(format)
+
 Format for `showTimeAxisTick`. Defaults to ```{stroke: "stroke-dasharray", spacing: "4 10"}```.
 
 Defaults to
+
 ```js
 {
 	marginTop: 25,
@@ -284,13 +312,17 @@ Defaults to
 	color: colorCycle
 }
 ```
+
 ### .rowSeparators(color)
+
 Sets the display of horizontal lines betweens rows.
 
 ### .background(color)
+
 Sets the background of the rows. Useful for creating a continuous effect when there are gaps in your data.
 
 ### .hover(callback)
+
 takes in a callback called on mousemove of the timeline data. Example
 
 ```js
@@ -303,12 +335,15 @@ d3.timeline()
 ```
 
 ### .xAxisClass
+
 Default is timeline-xAxis, but can be used to set any class.
 
 ### .axisZoom
+
 Default is true. Takes a boolean.  If set to false, does not allow zooming
 
 ### .mouseover(callback)
+
 takes in a callback called on mouseover of the timeline data. Example
 
 ```js
@@ -321,6 +356,7 @@ d3.timeline()
 ```
 
 ### .mouseout(callback)
+
 takes in a callback called on mouseout of the timeline data. Example
 
 ```js
@@ -333,6 +369,7 @@ d3.timeline()
 ```
 
 ### .click(callback)
+
 takes in a callback called on click of the timeline data. Example
 
 ```js
@@ -345,6 +382,7 @@ d3.timeline()
 ```
 
 ### .scroll(callback)
+
 takes in a callback called on scroll of the timeline data. Example
 
 ```js
@@ -359,7 +397,13 @@ d3.timeline()
 
 To build:
 - `npm install`
+- `npm test`
 - copy the build/d3-timelines.js to dist/d3-timelines.js
 
+## Previous work
+
+Inspired by jiahuang - https://github.com/jiahuang/d3-timeline
+
 ## License
+
 MIT

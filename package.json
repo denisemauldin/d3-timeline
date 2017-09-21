@@ -1,7 +1,7 @@
 {
 	"name": "d3-timelines",
-	"version": "1.3.0",
-	"description": "A d3 v4 version of timeline.  Original inspiration from: https://github.com/jiahuang/d3-timeline",
+	"version": "1.3.1",
+	"description": "A d3 v4 version of timeline. Can display single bar timelines, timelines with icons, and timelines that pan.",
 	"keywords": [
 		"d3",
 		"d3-module",
