@@ -135,7 +135,7 @@ Each item in the times array must have `starting_time` and `ending_time`.  You c
 ```
 
 
-##Method Calls
+## Method Calls
 
 All methods that take in arguments return the current settings if no argument is passed.
 
