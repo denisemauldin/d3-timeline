@@ -62,7 +62,9 @@ var timelines = function() {
 				showAxisHeaderBackground = false,
 				showAxisNav = false,
 				showAxisCalendarYear = false,
-				xAxisClass = 'timeline-xAxis'
+				xAxisClass = 'timeline-xAxis',			
+		    		xScale = null,
+				xAxis = null
 			;
 
 		var appendTimeAxis = function(g, xAxis, yPosition) {
@@ -277,8 +279,6 @@ var timelines = function() {
 					return output;
 			};
 
-			var xScale;
-			var xAxis;
 			if (orient == "bottom") {
 				xAxis = axisBottom();
 			} else if (orient == "top") {
