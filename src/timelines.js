@@ -497,16 +497,15 @@ var timelines = function() {
 				};
 			};
 
-			var zoom = d3z()
-				.scaleExtent([0, maxZoom]) // max zoom defaults to 5
-				.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
-				.on("zoom", move);
-
-			gParent
-				.classed("scrollable", true)
-				.call(zoom);
-
 			if (! allowZoom) {
+				var zoom = d3z()
+					.scaleExtent([0, maxZoom]) // max zoom defaults to 5
+					.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
+					.on("zoom", move);
+
+				gParent.classed("scrollable", true)
+					.call(zoom);
+				
 				g.on("wheel", function() {
 					event.preventDefault();
 					event.stopImmediatePropagation();
