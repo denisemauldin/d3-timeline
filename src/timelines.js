@@ -497,7 +497,7 @@ var timelines = function() {
 				};
 			};
 
-			if (! allowZoom) {
+			if (allowZoom) {
 				var zoom = d3z()
 					.scaleExtent([0, maxZoom]) // max zoom defaults to 5
 					.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis

@@ -2,7 +2,7 @@
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-axis'), require('d3-array'), require('d3-time-format'), require('d3-time'), require('d3-scale'), require('d3-selection'), require('d3-zoom')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-axis', 'd3-array', 'd3-time-format', 'd3-time', 'd3-scale', 'd3-selection', 'd3-zoom'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
-}(this, function (exports,d3Axis,d3Array,d3TimeFormat,d3Time,d3Scale,d3Selection,d3Zoom) { 'use strict';
+}(this, (function (exports,d3Axis,d3Array,d3TimeFormat,d3Time,d3Scale,d3Selection,d3Zoom) { 'use strict';
 
 	var timelines = function() {
 			var DISPLAY_TYPES = ["circle", "rect"];
@@ -31,7 +31,7 @@
 					allowZoom = true,
 					axisBgColor = "white",
 					chartData = {},
-					colorCycle = d3Scale.scaleOrdinal(d3Scale.schemeCategory20),
+					colorCycle = d3Scale.scaleOrdinal(d3Scale.schemeCategory10),
 					colorPropertyName = null,
 					display = "rect",
 					beginning = 0,
@@ -59,7 +59,9 @@
 					showAxisHeaderBackground = false,
 					showAxisNav = false,
 					showAxisCalendarYear = false,
-					xAxisClass = 'timeline-xAxis'
+					xAxisClass = 'timeline-xAxis',			
+			    		xScale = null,
+					xAxis = null
 				;
 
 			var appendTimeAxis = function(g, xAxis, yPosition) {
@@ -272,10 +274,7 @@
 								output = days + 'd ' + output;
 						}
 						return output;
-				};
-
-				var xScale;
-				var xAxis;
+				}
 				if (orient == "bottom") {
 					xAxis = d3Axis.axisBottom();
 				} else if (orient == "top") {
@@ -314,7 +313,7 @@
 					chartData = d;
 					d.forEach( function(datum, index){
 						var data = datum.times;
-						data.forEach(function(d) { d.name = datum.name });
+						data.forEach(function(d) { d.name = datum.name; });
 
 						var hasLabel = (typeof(datum.label) != "undefined");
 
@@ -492,18 +491,16 @@
 						var xpos = -d3Selection.event.transform.x;
 						scroll(xpos, xScale);
 					};
-				};
-
-				var zoom = d3Zoom.zoom()
-					.scaleExtent([0, maxZoom]) // max zoom defaults to 5
-					.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
-					.on("zoom", move);
-
-				gParent
-					.classed("scrollable", true)
-					.call(zoom);
-
+				}
 				if (! allowZoom) {
+					var zoom = d3Zoom.zoom()
+						.scaleExtent([0, maxZoom]) // max zoom defaults to 5
+						.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
+						.on("zoom", move);
+
+					gParent.classed("scrollable", true)
+						.call(zoom);
+					
 					g.on("wheel", function() {
 						d3Selection.event.preventDefault();
 						d3Selection.event.stopImmediatePropagation();
@@ -900,4 +897,4 @@
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));

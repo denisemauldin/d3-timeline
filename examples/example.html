@@ -101,10 +101,6 @@
       function timelineRect() {
         var chart = d3.timelines();
 
-        chart.colors(d3.scaleOrdinal(d3.schemeCategory10));
-
-        console.log(chart.colors()(0), chart.colors()(1), d3.schemeCategory10)
-
         var svg = d3.select("#timeline1").append("svg").attr("width", width)
           .datum(testData).call(chart);
       }

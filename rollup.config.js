@@ -7,7 +7,8 @@ export default {
     input: 'index.js',
     output: {
       file: 'build/d3-timelines.js',
-      format: 'umd',
+	  format: 'umd',
+	  extend: true,
 	  globals: {
 		  "d3-axis": "d3",
 		  "d3-array": "d3",
