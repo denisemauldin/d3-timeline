@@ -605,7 +605,7 @@ var timelines = function() {
 			function setWidth() {
 				if (!width && !gParentSize.width) {
 					try {
-						width = gParentItem.node().attr("width");
+						width = gParentItem.node().getAttribute("width");
 						if (!width) {
 							throw "width of the timeline is not set. As of Firefox 27, timeline().with(x) needs to be explicitly set in order to render";
 						}

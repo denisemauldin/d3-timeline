@@ -492,7 +492,7 @@
 						scroll(xpos, xScale);
 					};
 				}
-				if (! allowZoom) {
+				if (allowZoom) {
 					var zoom = d3Zoom.zoom()
 						.scaleExtent([0, maxZoom]) // max zoom defaults to 5
 						.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
@@ -582,8 +582,8 @@
 							// set height based off of item height
 							height = gSize.height + gSize.top - gParentSize.top;
 							// set bounding rectangle height
-							d3Selection.select(gParent).node().setAttribute("height", height);
-							//select(view).node().setAttribute("height", height);
+							d3Selection.select(gParent).node().attr("height", height);
+							//select(view).node().attr("height", height);
 						} else {
 							throw "height of the timeline is not set";
 						}
@@ -591,8 +591,8 @@
 						if (!height) {
 							height = gParentSize.height;
 						} else {
-							gParentItem.node().setAttribute("height", height);
-							//view.node().setAttribute("height", height);
+							gParentItem.node().attr("height", height);
+							//view.node().attr("height", height);
 						}
 					}
 				}
