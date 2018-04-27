@@ -3,7 +3,7 @@ import { axisBottom, axisTop } from 'd3-axis';
 import { range } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 import { timeHour } from 'd3-time';
-import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
+import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory10 } from 'd3-scale';
 import { event, mouse, namespace, namespaces, select } from 'd3-selection';
 import { zoom as d3z } from 'd3-zoom'
 
@@ -34,7 +34,7 @@ var timelines = function() {
 				allowZoom = true,
 				axisBgColor = "white",
 				chartData = {},
-				colorCycle = scaleOrdinal(schemeCategory20),
+				colorCycle = scaleOrdinal(schemeCategory10),
 				colorPropertyName = null,
 				display = "rect",
 				beginning = 0,
