@@ -23,7 +23,7 @@ var testData = [
 with a call that looks like
 
 ```js
-var chart = d3.timeline();
+var chart = d3.timelines();
 
 var svg = d3.select("#timeline1").append("svg").attr("width", 500)
 	.datum(testData).call(chart);
@@ -219,7 +219,7 @@ sets the data item property name that maps your data items to your color scale. 
 var colorScale = d3.scale.ordinal().range(['#6b0000','#ef9b0f','#ffee00'])
 						.domain(['apple','orange','lemon']);
 
-var chart = d3.timeline()
+var chart = d3.timelines()
 						.colors( colorScale )
 						.colorProperty('fruit');
 ```
@@ -326,7 +326,7 @@ Sets the background of the rows. Useful for creating a continuous effect when th
 takes in a callback called on mousemove of the timeline data. Example
 
 ```js
-d3.timeline()
+d3.timelines()
 	.hover(function (d, i, datum) {
 		// d is the current rendering object
 		// i is the index during d3 rendering
@@ -347,7 +347,7 @@ Default is true. Takes a boolean.  If set to false, does not allow zooming
 takes in a callback called on mouseover of the timeline data. Example
 
 ```js
-d3.timeline()
+d3.timelines()
 	.mouseover(function (d, i, datum) {
 		// d is the current rendering object
 		// i is the index during d3 rendering
@@ -360,7 +360,7 @@ d3.timeline()
 takes in a callback called on mouseout of the timeline data. Example
 
 ```js
-d3.timeline()
+d3.timelines()
 	.mouseout(function (d, i, datum) {
 		// d is the current rendering object
 		// i is the index during d3 rendering
@@ -373,7 +373,7 @@ d3.timeline()
 takes in a callback called on click of the timeline data. Example
 
 ```js
-d3.timeline()
+d3.timelines()
 	.click(function (d, i, datum) {
 		// d is the current rendering object
 		// i is the index during d3 rendering
@@ -386,7 +386,7 @@ d3.timeline()
 takes in a callback called on scroll of the timeline data. Example
 
 ```js
-d3.timeline()
+d3.timelines()
 	.scroll(function (x, scale) {
 		// x is the current position of the scroll
 		// scale is the scale of the axis used
