@@ -52,6 +52,7 @@ var timelines = function() {
 				navMargin = 60,
 				showTimeAxis = true,
 				showAxisTop = false,
+				todayDate = 0,
 				showTodayLine = false,
 				timeAxisTick = false,
 				timeAxisTickFormat = {stroke: "stroke-dasharray", spacing: "4 10"},
@@ -543,7 +544,9 @@ var timelines = function() {
 			}
 
 			if (showTodayLine) {
-				var todayLine = xScale(new Date());
+				var today = new Date().getTime();
+				if (todayDate) { today = todayDate; }
+				var todayLine = xScale(new Date(today));
 				appendLine(todayLine, showTodayFormat);
 			}
 
@@ -819,6 +822,12 @@ var timelines = function() {
 			showTodayFormat = todayFormat;
 			return timelines;
 		};
+
+		timelines.setTodayDate = function(date) {
+			if (!arguments.length) return todayDate;
+			todayDate = date;
+			return timelines;
+		}
 
 		timelines.colorProperty = function(colorProp) {
 			if (!arguments.length) return colorPropertyName;

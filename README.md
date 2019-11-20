@@ -280,6 +280,10 @@ Takes in no arguments. Toggles a vertical line showing the current Date.now() ti
 
 Sets the formatting of the showToday line. Color cycle can also be of the format `rgb(x, y, z)`.
 
+### .setTodayDate(date)
+
+Sets a custom time to be used by showToday function like current time.
+
 ### .showBorderLine()
 
 Takes in no arguments. Toggles a vertical line showing the borders of one specific timeline. Uses showBorderFormat for the line formatting.
