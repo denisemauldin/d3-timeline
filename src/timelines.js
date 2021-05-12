@@ -173,18 +173,6 @@ var timelines = function() {
 				.attr("class", "timeline-label")
 				.attr("transform", "translate(" + labelMargin + "," + rowsDown + ")")
 				.text(hasLabel ? labelFunction(datum.label) : datum.id)
-				.on("click", function (d, i) {
-
-					console.log("label click!");
-					var point = mouse(this);
-					gParent.append("rect")
-						.attr("id", "clickpoint")
-						.attr("x", point[0])
-						.attr("width", 10)
-						.attr("height", itemHeight);
-
-					click(d, index, datum, point, xScale.invert(point[0]));
-				});
 		};
 
 		/*###########################
