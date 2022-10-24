@@ -3,7 +3,7 @@ import { axisBottom, axisTop } from 'd3-axis';
 import { range } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 import { timeHour } from 'd3-time';
-import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory20 } from 'd3-scale';
+import { scaleOrdinal, scaleTime, scaleLinear, schemeCategory10 } from 'd3-scale';
 import { event, mouse, namespace, namespaces, select } from 'd3-selection';
 import { zoom as d3z } from 'd3-zoom'
 
@@ -34,7 +34,7 @@ var timelines = function() {
 				allowZoom = true,
 				axisBgColor = "white",
 				chartData = {},
-				colorCycle = scaleOrdinal(schemeCategory20),
+				colorCycle = scaleOrdinal(schemeCategory10),
 				colorPropertyName = null,
 				display = "rect",
 				beginning = 0,
@@ -497,7 +497,7 @@ var timelines = function() {
 				};
 			};
 
-			if (! allowZoom) {
+			if (allowZoom) {
 				var zoom = d3z()
 					.scaleExtent([0, maxZoom]) // max zoom defaults to 5
 					.translateExtent([[0, 0], [width, 0]]) // [x0, y0], [x1, y1] don't allow translating y-axis
@@ -605,7 +605,7 @@ var timelines = function() {
 			function setWidth() {
 				if (!width && !gParentSize.width) {
 					try {
-						width = gParentItem.node().attr("width");
+						width = gParentItem.node().getAttribute("width");
 						if (!width) {
 							throw "width of the timeline is not set. As of Firefox 27, timeline().with(x) needs to be explicitly set in order to render";
 						}

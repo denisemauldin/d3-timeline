@@ -209,7 +209,7 @@ sets the placement of the axis. Defaults to bottom.
 
 ### .colors(callback)
 
-sets the d3 color scale the data series in the timeline. Defaults to `d3.scale.category20()`.
+sets the d3 color scale the data series in the timeline. Defaults to `d3.scaleOrdinal(d3.schemeCategory10)`.
 
 ### .colorProperty(propertyName)
 
